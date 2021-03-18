@@ -6,6 +6,4 @@ add_subdirectory(common)
 add_library(${target} $<TARGET_OBJECTS:common>)
 add_library (${PROJECT_NAME}::${target} ALIAS ${target})
 
-
-
 # TODO install library
