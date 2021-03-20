@@ -14,7 +14,7 @@ struct title
 {
     using data_t = std::string;
 
-    data_t data;
+    data_t data; ///< the title
 };
 
 /**
@@ -24,13 +24,13 @@ struct versions
 {
     using data_t = std::vector<std::string>;
 
-    data_t eal;
-    data_t global;
-    data_t java_card;
-    data_t sha;
-    data_t rsa;
-    data_t ecc;
-    data_t des;
+    data_t eal;             ///< versions of eal
+    data_t global_platform; ///< versions of global platform
+    data_t java_card;       ///< versions of java card
+    data_t sha;             ///< versions of sha
+    data_t rsa;             ///< versions of rsa
+    data_t ecc;             ///< versions of ecc
+    data_t des;             ///< versions of des
 };
 
 /**
@@ -40,7 +40,7 @@ struct table_of_content
 {
     using data_t = std::vector<std::tuple<std::string, std::string, int>>;
 
-    data_t data;
+    data_t data; ///< the table of content
 };
 
 /**
@@ -50,7 +50,7 @@ struct revisions
 {
     using data_t = std::vector<std::unordered_map<std::string, std::string>>;
 
-    data_t data;
+    data_t data; ///< revisions
 };
 
 /**
@@ -60,7 +60,7 @@ struct bibliography
 {
     using data_t = std::unordered_map<std::string, std::string>;
 
-    data_t data;
+    data_t data; ///< the bibliography
 };
 
 /**
@@ -70,6 +70,6 @@ struct other
 {
     using data_t = std::unordered_map<std::string, std::string>;
 
-    data_t data;
+    data_t data; ///< other
 };
 } // namespace sparse::common
