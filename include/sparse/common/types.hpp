@@ -22,9 +22,15 @@ struct title
  */
 struct versions
 {
-    using data_t = std::unordered_map<std::string, std::vector<std::string>>;
+    using data_t = std::vector<std::string>;
 
-    data_t data;
+    data_t eal;
+    data_t global;
+    data_t java_card;
+    data_t sha;
+    data_t rsa;
+    data_t ecc;
+    data_t des;
 };
 
 /**
