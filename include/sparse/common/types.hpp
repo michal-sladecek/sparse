@@ -1,8 +1,9 @@
 #pragma once
 
+#include <chrono>
+#include <map>
 #include <string>
 #include <tuple>
-#include <unordered_map>
 #include <vector>
 
 namespace sparse::common
@@ -34,13 +35,34 @@ struct versions
 };
 
 /**
- * @brief Parsed table of content of the certificate
+ * @brief Parsed section of the certificate
  */
-struct table_of_content
+struct section
 {
-    using data_t = std::vector<std::tuple<std::string, std::string, int>>;
+    std::string id;       ///< id of the section
+    std::string name;     ///< name of the section
+    uint32_t page_number; ///< page number of the beginning of the section
+};
 
-    data_t data; ///< the table of content
+/**
+ * @brief Parsed table of contents of the certificate
+ */
+struct table_of_contents
+{
+    using data_t = std::vector<section>;
+
+    data_t data; ///< the table of contents
+};
+
+
+/**
+ * @brief Parsed revision of the certificate
+ */
+struct revision
+{
+    std::string version;              ///< version
+    std::chrono::year_month_day date; ///< date
+    std::string description;          ///< description
 };
 
 /**
@@ -48,7 +70,7 @@ struct table_of_content
  */
 struct revisions
 {
-    using data_t = std::vector<std::unordered_map<std::string, std::string>>;
+    using data_t = std::vector<revision>;
 
     data_t data; ///< revisions
 };
@@ -58,7 +80,7 @@ struct revisions
  */
 struct bibliography
 {
-    using data_t = std::unordered_map<std::string, std::string>;
+    using data_t = std::map<std::string, std::string>;
 
     data_t data; ///< the bibliography
 };
@@ -68,7 +90,7 @@ struct bibliography
  */
 struct other
 {
-    using data_t = std::unordered_map<std::string, std::string>;
+    using data_t = std::map<std::string, std::string>;
 
     data_t data; ///< other
 };
