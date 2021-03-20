@@ -13,10 +13,14 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 option(BUILD_MODULES "Build project modules"  ON)
 option(BUILD_DOC     "Generace documentation" ON)
 
+# Set up sanitizers for project
+# "address", "memory" and "thread" are mutually exclusive, "leak" requires the "address" sanitizer
+set(ECM_ENABLE_SANITIZERS CACHE STRING "Any of: undefined;thread;address;leak")
 
 include(Dependencies)
 include(CompileOptions)
 include(CTest)
+include(ECMEnableSanitizers)
 
 add_subdirectory(src)
 add_subdirectory(tests)
