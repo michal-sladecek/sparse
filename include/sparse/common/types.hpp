@@ -9,7 +9,7 @@
 namespace sparse::common
 {
 /**
- * @brief Parsed title of the certificate
+ * @brief Parsed title of the certificate.
  */
 struct title
 {
@@ -19,7 +19,7 @@ struct title
 };
 
 /**
- * @brief Parsed versions of the certificate
+ * @brief Parsed versions of the certificate.
  */
 struct versions
 {
@@ -35,12 +35,12 @@ struct versions
 };
 
 /**
- * @brief Parsed section of the certificate
+ * @brief Parsed section of the certificate.
  */
 struct section
 {
-    std::string id;       ///< id of the section
-    std::string name;     ///< name of the section
+    std::string id;       ///< id
+    std::string name;     ///< name
     uint32_t page_number; ///< page number of the beginning of the section
 };
 
@@ -56,7 +56,7 @@ struct table_of_contents
 
 
 /**
- * @brief Parsed revision of the certificate
+ * @brief Parsed revision of the certificate.
  */
 struct revision
 {
@@ -66,7 +66,7 @@ struct revision
 };
 
 /**
- * @brief Parsed revisions of the certificate
+ * @brief Parsed revisions of the certificate.
  */
 struct revisions
 {
@@ -76,7 +76,7 @@ struct revisions
 };
 
 /**
- * @brief Parsed bibliography of the certificate
+ * @brief Parsed bibliography of the certificate.
  */
 struct bibliography
 {
@@ -86,7 +86,7 @@ struct bibliography
 };
 
 /**
- * @brief Parsed section other of the certificate
+ * @brief Parsed section other of the certificate.
  */
 struct other
 {
