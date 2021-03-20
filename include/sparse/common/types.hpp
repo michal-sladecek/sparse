@@ -1,6 +1,5 @@
 #pragma once
 
-#include <chrono>
 #include <map>
 #include <string>
 #include <tuple>
@@ -60,9 +59,9 @@ struct table_of_contents
  */
 struct revision
 {
-    std::string version;              ///< version
-    std::chrono::year_month_day date; ///< date
-    std::string description;          ///< description
+    std::string version;     ///< version
+    std::string date;        ///< date
+    std::string description; ///< description
 };
 
 /**
