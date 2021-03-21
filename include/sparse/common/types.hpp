@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <tuple>
+#include <unordered_map>
 #include <vector>
 
 namespace sparse::common
@@ -59,7 +60,7 @@ using revisions_t = std::vector<revision_t>;
 /**
  * @brief Parsed bibliography of the certificate.
  */
-using bibliography_t = std::map<std::string, std::string>;
+using bibliography_t = std::unordered_map<std::string, std::string>;
 
 /**
  * @brief Parsed section other of the certificate.
