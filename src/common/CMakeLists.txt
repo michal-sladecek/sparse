@@ -9,6 +9,7 @@ set(sources
 
 set(headers
     ${include_path}/utility.hpp
+    ${include_path}/types.hpp
 )
 
 add_library(${target} OBJECT ${sources} ${headers})
