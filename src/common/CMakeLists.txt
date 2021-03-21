@@ -10,6 +10,7 @@ set(sources
 set(headers
     ${include_path}/utility.hpp
     ${include_path}/types.hpp
+    ${include_path}/parser_interface.hpp
 )
 
 add_library(${target} OBJECT ${sources} ${headers})
