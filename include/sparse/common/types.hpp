@@ -59,8 +59,7 @@ using revisions_t = std::vector<revision_t>;
 /**
  * @brief Parsed bibliography of the certificate.
  */
-using bibliography = std::vector<std::string, std::string>;
-
+using bibliography_t = std::map<std::string, std::string>;
 
 /**
  * @brief Parsed section other of the certificate.
