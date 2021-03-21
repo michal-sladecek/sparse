@@ -10,33 +10,26 @@ namespace sparse::common
 /**
  * @brief Parsed title of the certificate.
  */
-struct title
-{
-    using data_t = std::string;
-
-    data_t data; ///< the title
-};
+using title_t = std::string;
 
 /**
  * @brief Parsed versions of the certificate.
  */
-struct versions
+struct versions_t
 {
-    using data_t = std::vector<std::string>;
-
-    data_t eal;             ///< versions of eal
-    data_t global_platform; ///< versions of global platform
-    data_t java_card;       ///< versions of java card
-    data_t sha;             ///< versions of sha
-    data_t rsa;             ///< versions of rsa
-    data_t ecc;             ///< versions of ecc
-    data_t des;             ///< versions of des
+    std::vector<std::string> eal;             ///< versions of eal
+    std::vector<std::string> global_platform; ///< versions of global platform
+    std::vector<std::string> java_card;       ///< versions of java card
+    std::vector<std::string> sha;             ///< versions of sha
+    std::vector<std::string> rsa;             ///< versions of rsa
+    std::vector<std::string> ecc;             ///< versions of ecc
+    std::vector<std::string> des;             ///< versions of des
 };
 
 /**
  * @brief Parsed section of the certificate.
  */
-struct section
+struct section_t
 {
     std::string id;       ///< id
     std::string name;     ///< name
@@ -46,18 +39,12 @@ struct section
 /**
  * @brief Parsed table of contents of the certificate
  */
-struct table_of_contents
-{
-    using data_t = std::vector<section>;
-
-    data_t data; ///< the table of contents
-};
-
+using table_of_contents_t = std::vector<section_t>;
 
 /**
  * @brief Parsed revision of the certificate.
  */
-struct revision
+struct revision_t
 {
     std::string version;     ///< version
     std::string date;        ///< date
@@ -67,30 +54,16 @@ struct revision
 /**
  * @brief Parsed revisions of the certificate.
  */
-struct revisions
-{
-    using data_t = std::vector<revision>;
-
-    data_t data; ///< revisions
-};
+using revisions_t = std::vector<revision_t>;
 
 /**
  * @brief Parsed bibliography of the certificate.
  */
-struct bibliography
-{
-    using data_t = std::map<std::string, std::string>;
+using bibliography = std::map<std::string, std::string>;
 
-    data_t data; ///< the bibliography
-};
 
 /**
  * @brief Parsed section other of the certificate.
  */
-struct other
-{
-    using data_t = std::map<std::string, std::string>;
-
-    data_t data; ///< other
-};
+using other_t = std::map<std::string, std::string>;
 } // namespace sparse::common
