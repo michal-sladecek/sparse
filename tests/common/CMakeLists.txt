@@ -3,6 +3,7 @@ set(target tests_common)
 set(sources
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/tests_common.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests_parse_bibliography.cpp
 )
 
 add_executable(${target} ${sources})

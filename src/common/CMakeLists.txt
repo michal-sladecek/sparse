@@ -5,11 +5,13 @@ set(include_path "${CMAKE_SOURCE_DIR}/include/${PROJECT_NAME}/${target}")
 
 set(sources
     ${source_path}/utility.cpp
+        ${source_path}/parse_bibliography.cpp
 )
 
 set(headers
     ${include_path}/utility.hpp
     ${include_path}/types.hpp
+        ${include_path}/parsers.hpp
 )
 
 add_library(${target} OBJECT ${sources} ${headers})
