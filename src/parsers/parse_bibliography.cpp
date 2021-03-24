@@ -90,12 +90,10 @@ sparse::common::bibliography_t get_bibliography_beginning_at(const std::string& 
     bool currently_parsing_bibliography_entry = false;
 
 
-    for ( auto lines_since_last_bibliography_entry = 0;
-          lines_since_last_bibliography_entry < max_length_of_bibliography_entry && (current_position = s.find('\n', previous_position + 1)) != std::string::npos;
-         ++lines_since_last_bibliography_entry
-         )
+    for (auto lines_since_last_bibliography_entry = 0; lines_since_last_bibliography_entry < max_length_of_bibliography_entry &&
+                                                       (current_position = s.find('\n', previous_position + 1)) != std::string::npos;
+         ++lines_since_last_bibliography_entry)
     {
-
         std::string line = s.substr(previous_position, current_position - previous_position);
 
         if (does_line_resemble_bibliography_entry_beginning(line))
@@ -159,4 +157,4 @@ std::optional<bibliography_t> parse_bibliography(const std::string& whole_file) 
 
     return {biggest_bibliography};
 }
-} // namespace sparse::common
+} // namespace sparse::parsers
