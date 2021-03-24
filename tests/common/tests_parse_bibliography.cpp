@@ -1,9 +1,9 @@
 #include <catch2/catch.hpp>
+#include <filesystem>
 #include <iostream>
+#include <sparse/common/parsers.hpp>
 #include <sparse/common/utility.hpp>
 #include <string>
-#include <filesystem>
-#include <sparse/common/parsers.hpp>
 
 
 TEST_CASE("test-1107a_pdf")
@@ -43,7 +43,8 @@ TEST_CASE("Certification_Report_NSCIB-CC-200689-CR.txt")
 
     REQUIRE(bib["[CC]"] == "Common Criteria for Information Technology Security Evaluation, Parts I, II and III, Version 3.1 Revision 5, April 2017.");
     REQUIRE(bib["[NSCIB]"] == "Netherlands Scheme for Certification in the Area of IT Security, Version 2.5, 28 March 2019.");
-    REQUIRE(bib["[TR_03110]"] == "Technical Guideline Advanced Security Mechanisms for Machine Readable Travel Documents – Part 1 – eMRTDs with BAC/PACEv2 and EACv1, Version 2.10, TR-03110, Bundesamt für Sicherheit in der Informationstechnik (BSI)");
+    REQUIRE(bib["[TR_03110]"] == "Technical Guideline Advanced Security Mechanisms for Machine Readable Travel Documents – Part 1 – eMRTDs with BAC/PACEv2 and "
+                                 "EACv1, Version 2.10, TR-03110, Bundesamt für Sicherheit in der Informationstechnik (BSI)");
 }
 
 TEST_CASE("NSCIB-CC-195714_3-STv3.1")

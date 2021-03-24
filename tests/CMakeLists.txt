@@ -1,6 +1,6 @@
-if(NOT BUILD_TESTING)
+if (NOT BUILD_TESTING)
     return()
-endif()
+endif ()
 
 
 set(test_data
@@ -9,9 +9,9 @@ set(test_data
         NSCIB-CC-195714_3-STv3.1.txt
         )
 
-foreach(df ${test_data})
+foreach (df ${test_data})
     file(COPY ./test_data/${df} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-endforeach()
+endforeach ()
 
 add_subdirectory(common)
 
