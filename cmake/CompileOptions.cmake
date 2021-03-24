@@ -7,7 +7,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU") # using GCC
 endif()
 
 set(cxx_warnings
-    "-Wall -Wextra -Wpedantic -Wdouble-promotion -Wnull-dereference -Wimplicit-fallthrough \
+    "-Wall -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wextra -Wpedantic -Wdouble-promotion -Wnull-dereference -Wimplicit-fallthrough \
     -Wswitch-default -Wuninitialized -Wfloat-equal -Wshadow -Wconversion ${additional_warnings}"
 )
 
