@@ -14,5 +14,7 @@ foreach (df ${test_data})
 endforeach ()
 
 add_subdirectory(common)
+add_subdirectory(parsers)
+
 
 # TODO add catch2 tests

@@ -1,8 +1,8 @@
 #include <catch2/catch.hpp>
 #include <filesystem>
 #include <iostream>
-#include <sparse/common/parsers.hpp>
 #include <sparse/common/utility.hpp>
+#include <sparse/parsers/parsers.hpp>
 #include <string>
 
 
@@ -12,7 +12,7 @@ TEST_CASE("test-1107a_pdf")
     REQUIRE(whole_text.length() > 0);
 
 
-    std::optional<sparse::common::bibliography_t> bib_optional = sparse::common::parse_bibliography(whole_text);
+    std::optional<sparse::common::bibliography_t> bib_optional = sparse::parsers::parse_bibliography(whole_text);
 
     REQUIRE(bib_optional.has_value());
 
@@ -31,7 +31,7 @@ TEST_CASE("Certification_Report_NSCIB-CC-200689-CR.txt")
 {
     std::string whole_text = sparse::common::load_file_into_string("../Certification_Report_NSCIB-CC-200689-CR.txt");
     REQUIRE(whole_text.length() > 0);
-    std::optional<sparse::common::bibliography_t> bib_optional = sparse::common::parse_bibliography(whole_text);
+    std::optional<sparse::common::bibliography_t> bib_optional = sparse::parsers::parse_bibliography(whole_text);
 
     REQUIRE(bib_optional.has_value());
 
@@ -51,7 +51,7 @@ TEST_CASE("NSCIB-CC-195714_3-STv3.1")
 {
     std::string whole_text = sparse::common::load_file_into_string("../NSCIB-CC-195714_3-STv3.1.txt");
     REQUIRE(whole_text.length() > 0);
-    std::optional<sparse::common::bibliography_t> bib_optional = sparse::common::parse_bibliography(whole_text);
+    std::optional<sparse::common::bibliography_t> bib_optional = sparse::parsers::parse_bibliography(whole_text);
 
     REQUIRE(bib_optional.has_value());
 }

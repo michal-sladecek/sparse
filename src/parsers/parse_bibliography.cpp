@@ -1,9 +1,12 @@
 #include <iostream>
 #include <optional>
 #include <regex>
-#include <sparse/common/parsers.hpp>
 #include <sparse/common/types.hpp>
+#include <sparse/parsers/parsers.hpp>
 #include <string>
+
+
+using sparse::common::bibliography_t;
 
 constexpr int max_length_of_bibliography_entry = 50;
 
@@ -126,7 +129,7 @@ sparse::common::bibliography_t get_bibliography_beginning_at(const std::string& 
 } // namespace
 
 
-namespace sparse::common
+namespace sparse::parsers
 {
 std::optional<bibliography_t> parse_bibliography(const std::string& whole_file) noexcept
 {
