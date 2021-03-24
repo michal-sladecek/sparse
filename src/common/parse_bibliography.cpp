@@ -12,9 +12,6 @@ const int NUMLINESTOENDBIBLIOGRAPHY = 50;
  * Problematic files to parse:
  *     1110V3b_pdf.txt
  *          - the bibliography entries do not contain [] notation
- *     NSCIB-CC-195714_3-STv3.1.txt
- *          - not yet sure why
- *
  *
  */
 
@@ -24,9 +21,16 @@ namespace
  * Attempt to find the bibliography by finding keyword "Bibliography"
  *
  */
+std::regex bibliography_beginning("(Bibliography|References|Literature|REFERENCE)");
+std::regex bibliography_entry_beginning("^\\s*\\[.*");
+std::regex empty_line("^\\s*$");
+std::regex join_lines_ending_with_dash("-\\s*\n\\s*");
+std::regex join_lines("\\s*\n\\s*");
+std::regex remove_long_whitespaces("\\s\\s*");
+std::regex key_and_entry_split("^\\s*(\\[[^\\s]*\\])\\s*(.*)");
+
 void find_possible_bibliography_beginnings(const std::string& s, std::vector<int>& possible_bibliography_beginnings)
 {
-    std::regex bibliography_beginning("(Bibliography|References|Literature|REFERENCE)");
     int length = s.length();
     std::smatch match;
 
@@ -38,13 +42,13 @@ void find_possible_bibliography_beginnings(const std::string& s, std::vector<int
 
 bool is_line_empty(const std::string& line)
 {
-    std::regex empty_line("^\\s*$");
+
     return std::regex_match(line, empty_line);
 }
 
 bool does_line_resemble_bibliography_entry_beginning(const std::string& line)
 {
-    std::regex bibliography_entry_beginning("^\\s*\\[.*");
+
     return std::regex_match(line, bibliography_entry_beginning);
 }
 
@@ -52,9 +56,7 @@ std::string clean_lines(const std::string& line)
 {
     std::string result = line;
 
-    std::regex join_lines_ending_with_dash("-\\s*\n\\s*");
-    std::regex join_lines("\\s*\n\\s*");
-    std::regex remove_long_whitespaces("\\s\\s*");
+
 
     result = std::regex_replace(result, join_lines_ending_with_dash, "-");
     result = std::regex_replace(result, join_lines, " ");
@@ -69,7 +71,7 @@ void process_bibliography_entry(sparse::common::bibliography_t& bibliography, co
 
     std::smatch split_matches;
 
-    std::regex key_and_entry_split("^\\s*(\\[[^\s]*\\])\\s*(.*)");
+
     std::regex_match(joined_line, split_matches, key_and_entry_split);
 
     if (split_matches.size() < 3)
