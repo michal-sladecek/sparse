@@ -6,5 +6,5 @@
 
 namespace sparse::common
 {
-std::optional<bibliography_t> parse_bibliography(const std::string&);
+std::optional<bibliography_t> parse_bibliography(const std::string&) noexcept;
 }

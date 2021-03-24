@@ -6,6 +6,7 @@
 
 namespace sparse::common
 {
+
 std::string load_file_into_string(const std::string& filename)
 {
     std::ifstream file_stream(filename, std::ios::binary);

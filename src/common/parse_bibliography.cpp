@@ -5,57 +5,50 @@
 #include <sparse/common/types.hpp>
 #include <string>
 
-const int NUMLINESTOENDBIBLIOGRAPHY = 50;
+constexpr int max_length_of_bibliography_entry = 50;
 
 
 /*
  * Problematic files to parse:
  *     1110V3b_pdf.txt
  *          - the bibliography entries do not contain [] notation
- *
  */
 
 namespace
 {
-/*
- * Attempt to find the bibliography by finding keyword "Bibliography"
- *
- */
-std::regex bibliography_beginning("(Bibliography|References|Literature|REFERENCE)");
-std::regex bibliography_entry_beginning("^\\s*\\[.*");
-std::regex empty_line("^\\s*$");
-std::regex join_lines_ending_with_dash("-\\s*\n\\s*");
-std::regex join_lines("\\s*\n\\s*");
-std::regex remove_long_whitespaces("\\s\\s*");
-std::regex key_and_entry_split("^\\s*(\\[[^\\s]*\\])\\s*(.*)");
+const std::regex bibliography_beginning("(bibliography|literature|reference)", std::regex_constants::icase);
+const std::regex bibliography_entry_beginning("^\\s*\\[.*");
+const std::regex empty_line("^\\s*$");
+const std::regex join_lines_ending_with_dash("-\\s*\n\\s*");
+const std::regex join_lines("\\s*\n\\s*");
+const std::regex remove_long_whitespaces("\\s\\s*");
+const std::regex key_and_entry_split("^\\s*(\\[[^\\s]*\\])\\s*(.*)");
 
-void find_possible_bibliography_beginnings(const std::string& s, std::vector<int>& possible_bibliography_beginnings)
+std::vector<std::string::size_type> find_possible_bibliography_beginnings(const std::string& s) noexcept
 {
-    int length = s.length();
+    std::vector<std::string::size_type> possible_bibliography_beginnings;
     std::smatch match;
 
-    for (std::sregex_iterator i = std::sregex_iterator(s.begin(), s.end(), bibliography_beginning); i != std::sregex_iterator(); ++i)
+    for (auto iter = std::sregex_iterator(s.begin(), s.end(), bibliography_beginning); iter != std::sregex_iterator(); ++iter)
     {
-        possible_bibliography_beginnings.push_back(i->position(0));
+        possible_bibliography_beginnings.push_back(static_cast<std::string::size_type>(iter->position(0)));
     }
+    return possible_bibliography_beginnings;
 }
 
-bool is_line_empty(const std::string& line)
+bool is_line_empty(const std::string& line) noexcept
 {
-
     return std::regex_match(line, empty_line);
 }
 
-bool does_line_resemble_bibliography_entry_beginning(const std::string& line)
+bool does_line_resemble_bibliography_entry_beginning(const std::string& line) noexcept
 {
-
     return std::regex_match(line, bibliography_entry_beginning);
 }
 
-std::string clean_lines(const std::string& line)
+std::string clean_lines(const std::string& line) noexcept
 {
     std::string result = line;
-
 
 
     result = std::regex_replace(result, join_lines_ending_with_dash, "-");
@@ -65,7 +58,7 @@ std::string clean_lines(const std::string& line)
     return result;
 }
 
-void process_bibliography_entry(sparse::common::bibliography_t& bibliography, const std::string& line)
+void process_bibliography_entry(sparse::common::bibliography_t& bibliography, const std::string& line) noexcept
 {
     std::string joined_line = clean_lines(line);
 
@@ -83,27 +76,23 @@ void process_bibliography_entry(sparse::common::bibliography_t& bibliography, co
 }
 
 
-sparse::common::bibliography_t get_bibliography_beginning_at(const std::string& s, int beg)
+sparse::common::bibliography_t get_bibliography_beginning_at(const std::string& s, std::string::size_type beg) noexcept
 {
     std::string::size_type current_position;
     std::string::size_type previous_position = beg;
-
-
     sparse::common::bibliography_t bibliography;
 
-
-    /*
-     * If we are currently parsing a bibliography and we do not find new entry for NUMLINESTOENDBIBLIOGRAPHY, we stop parsing.
-     */
-    unsigned int lines_until_finished_parsing = NUMLINESTOENDBIBLIOGRAPHY;
-
-    std::string current_bibliography_entry = "";
+    std::string current_bibliography_entry;
 
     bool currently_parsing_bibliography_entry = false;
 
 
-    while (lines_until_finished_parsing > 0 && (current_position = s.find('\n', previous_position + 1)) != std::string::npos)
+    for ( auto lines_since_last_bibliography_entry = 0;
+          lines_since_last_bibliography_entry < max_length_of_bibliography_entry && (current_position = s.find('\n', previous_position + 1)) != std::string::npos;
+         ++lines_since_last_bibliography_entry
+         )
     {
+
         std::string line = s.substr(previous_position, current_position - previous_position);
 
         bool current_line_contains_beginning_of_bibliography = does_line_resemble_bibliography_entry_beginning(line);
@@ -114,7 +103,7 @@ sparse::common::bibliography_t get_bibliography_beginning_at(const std::string& 
             process_bibliography_entry(bibliography, current_bibliography_entry);
 
             // Finding new bibliography entry resets the counter.
-            lines_until_finished_parsing         = NUMLINESTOENDBIBLIOGRAPHY;
+            lines_since_last_bibliography_entry  = 0;
             current_bibliography_entry           = line;
             currently_parsing_bibliography_entry = true;
         }
@@ -131,8 +120,6 @@ sparse::common::bibliography_t get_bibliography_beginning_at(const std::string& 
             current_bibliography_entry += line;
         }
 
-
-        --lines_until_finished_parsing;
         previous_position = current_position;
     }
 
@@ -144,14 +131,9 @@ sparse::common::bibliography_t get_bibliography_beginning_at(const std::string& 
 
 namespace sparse::common
 {
-std::optional<bibliography_t> parse_bibliography(const std::string& whole_file)
+std::optional<bibliography_t> parse_bibliography(const std::string& whole_file) noexcept
 {
-    std::vector<int> possible_bibliography_beginnings;
-
-
-    // We find possible beginnings of bibliography
-    find_possible_bibliography_beginnings(whole_file, possible_bibliography_beginnings);
-
+    std::vector<std::string::size_type> possible_bibliography_beginnings = find_possible_bibliography_beginnings(whole_file);
 
     bibliography_t biggest_bibliography;
 
