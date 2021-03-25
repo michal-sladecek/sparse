@@ -1,13 +1,6 @@
 #include <catch2/catch.hpp>
 #include <sparse/common/utility.hpp>
 
-
-TEST_CASE("test")
-{
-    REQUIRE(true);
-}
-
-
 TEST_CASE("load_file_into_string")
 {
     std::string whole_text = sparse::common::load_file_into_string("../1107a_pdf.txt");
