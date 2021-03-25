@@ -11,4 +11,4 @@ set(cxx_warnings
     -Wswitch-default -Wuninitialized -Wfloat-equal -Wshadow -Wconversion ${additional_warnings}"
 )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORTIFY_SOURCE=2 ${stack_clash_protection} -fstack-protector-strong ${cxx_warnings}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORTIFY_SOURCE=2 ${stack_clash_protection} -fstack-protector-strong -EHsc ${cxx_warnings}")
