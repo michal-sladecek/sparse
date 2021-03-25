@@ -8,7 +8,7 @@
 
 using sparse::common::bibliography_t;
 
-constexpr int max_length_of_bibliography_entry = 50;
+
 
 
 /*
@@ -30,7 +30,6 @@ const std::regex key_and_entry_split("^\\s*(\\[[^\\s]*\\])\\s*(.*)");
 std::vector<std::size_t> find_possible_bibliography_beginnings(const std::string& s) noexcept
 {
     std::vector<std::size_t> possible_bibliography_beginnings;
-    std::smatch match;
 
     for (auto iter = std::sregex_iterator(s.begin(), s.end(), bibliography_beginning); iter != std::sregex_iterator(); ++iter)
     {
@@ -49,21 +48,19 @@ bool does_line_resemble_bibliography_entry_beginning(const std::string& line) no
     return std::regex_match(line, bibliography_entry_beginning);
 }
 
-std::string clean_lines(const std::string& line) noexcept
+std::string clean_lines(std::string line) noexcept
 {
-    std::string result = line;
 
+    line = std::regex_replace(line, join_lines_ending_with_dash, "-");
+    line = std::regex_replace(line, join_lines, " ");
+    line = std::regex_replace(line, remove_long_whitespaces, " ");
 
-    result = std::regex_replace(result, join_lines_ending_with_dash, "-");
-    result = std::regex_replace(result, join_lines, " ");
-    result = std::regex_replace(result, remove_long_whitespaces, " ");
-
-    return result;
+    return line;
 }
 
 void process_bibliography_entry(sparse::common::bibliography_t& bibliography, const std::string& line) noexcept
 {
-    std::string joined_line = clean_lines(line);
+    const auto joined_line = clean_lines(line);
 
     std::smatch split_matches;
 
@@ -81,6 +78,8 @@ void process_bibliography_entry(sparse::common::bibliography_t& bibliography, co
 
 sparse::common::bibliography_t get_bibliography_beginning_at(const std::string& s, std::size_t beg) noexcept
 {
+    constexpr int max_length_of_bibliography_entry = 50;
+
     std::size_t current_position;
     std::size_t previous_position = beg;
     sparse::common::bibliography_t bibliography;
@@ -94,7 +93,7 @@ sparse::common::bibliography_t get_bibliography_beginning_at(const std::string& 
                                                        (current_position = s.find('\n', previous_position + 1)) != std::string::npos;
          ++lines_since_last_bibliography_entry)
     {
-        std::string line = s.substr(previous_position, current_position - previous_position);
+        const auto line = s.substr(previous_position, current_position - previous_position);
 
         if (does_line_resemble_bibliography_entry_beginning(line))
         {
@@ -131,7 +130,8 @@ namespace sparse::parsers
 {
 std::optional<bibliography_t> parse_bibliography(const std::string& whole_file) noexcept
 {
-    std::vector<std::size_t> possible_bibliography_beginnings = find_possible_bibliography_beginnings(whole_file);
+
+    const auto possible_bibliography_beginnings = find_possible_bibliography_beginnings(whole_file);
 
     bibliography_t biggest_bibliography;
 
@@ -143,18 +143,18 @@ std::optional<bibliography_t> parse_bibliography(const std::string& whole_file) 
          * In the case there is more of them, we try to parse each one
          * And take the one that contains most entries, as it is the one that is most likely to not be a false positive
          */
-        bibliography_t possible_bibliography = get_bibliography_beginning_at(whole_file, i);
+        const auto possible_bibliography = get_bibliography_beginning_at(whole_file, i);
         if (possible_bibliography.size() > biggest_bibliography.size())
         {
             biggest_bibliography = possible_bibliography;
         }
     }
 
-    if (biggest_bibliography.size() == 0)
+    if (biggest_bibliography.empty())
     {
         return {};
     }
 
-    return {biggest_bibliography};
+    return biggest_bibliography;
 }
 } // namespace sparse::parsers
