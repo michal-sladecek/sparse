@@ -1,12 +1,13 @@
 #include <fstream>
 #include <iostream>
+#include <filesystem>
 #include <nlohmann/json.hpp>
 #include <sparse/common/utility.hpp>
 #include <string>
 
 namespace sparse::common
 {
-std::string load_file_into_string(const std::string& filename)
+std::string load_file_into_string(const std::filesystem::path& filename)
 {
     std::ifstream file_stream(filename, std::ios::binary);
     return std::string(std::istreambuf_iterator<char>(file_stream), std::istreambuf_iterator<char>());
