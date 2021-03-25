@@ -3,7 +3,6 @@ if (NOT BUILD_TESTING)
 endif ()
 
 
-
 add_subdirectory(common)
 add_subdirectory(parsers)
 

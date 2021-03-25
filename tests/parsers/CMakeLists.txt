@@ -6,10 +6,8 @@ set(sources
         )
 
 
-
 file(GLOB test_data "test_data/*.txt")
 file(COPY ${test_data} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-
 
 
 add_executable(${target} ${sources})

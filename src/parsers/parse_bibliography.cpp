@@ -9,8 +9,6 @@
 using sparse::common::bibliography_t;
 
 
-
-
 /*
  * Problematic files to parse:
  *     1110V3b_pdf.txt
@@ -50,7 +48,6 @@ bool does_line_resemble_bibliography_entry_beginning(const std::string& line) no
 
 std::string clean_lines(std::string line) noexcept
 {
-
     line = std::regex_replace(line, join_lines_ending_with_dash, "-");
     line = std::regex_replace(line, join_lines, " ");
     line = std::regex_replace(line, remove_long_whitespaces, " ");
@@ -130,7 +127,6 @@ namespace sparse::parsers
 {
 std::optional<bibliography_t> parse_bibliography(const std::string& whole_file) noexcept
 {
-
     const auto possible_bibliography_beginnings = find_possible_bibliography_beginnings(whole_file);
 
     bibliography_t biggest_bibliography;
