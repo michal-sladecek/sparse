@@ -5,6 +5,13 @@ set(sources
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
         )
 
+
+
+file(GLOB test_data "test_data/*.txt")
+file(COPY ${test_data} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+
+
 add_executable(${target} ${sources})
 add_executable(${PROJECT_NAME}::tests::${target} ALIAS ${target})
 

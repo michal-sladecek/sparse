@@ -8,7 +8,7 @@
 
 TEST_CASE("test-1107a_pdf")
 {
-    std::string whole_text = sparse::common::load_file_into_string("../1107a_pdf.txt");
+    std::string whole_text = sparse::common::load_file_into_string("./1107a_pdf.txt");
     REQUIRE(whole_text.length() > 0);
 
 
@@ -29,7 +29,7 @@ TEST_CASE("test-1107a_pdf")
 
 TEST_CASE("Certification_Report_NSCIB-CC-200689-CR.txt")
 {
-    std::string whole_text = sparse::common::load_file_into_string("../Certification_Report_NSCIB-CC-200689-CR.txt");
+    std::string whole_text = sparse::common::load_file_into_string("./Certification_Report_NSCIB-CC-200689-CR.txt");
     REQUIRE(whole_text.length() > 0);
     std::optional<sparse::common::bibliography_t> bib_optional = sparse::parsers::parse_bibliography(whole_text);
 
@@ -49,7 +49,7 @@ TEST_CASE("Certification_Report_NSCIB-CC-200689-CR.txt")
 
 TEST_CASE("NSCIB-CC-195714_3-STv3.1")
 {
-    std::string whole_text = sparse::common::load_file_into_string("../NSCIB-CC-195714_3-STv3.1.txt");
+    std::string whole_text = sparse::common::load_file_into_string("./NSCIB-CC-195714_3-STv3.1.txt");
     REQUIRE(whole_text.length() > 0);
     std::optional<sparse::common::bibliography_t> bib_optional = sparse::parsers::parse_bibliography(whole_text);
 
