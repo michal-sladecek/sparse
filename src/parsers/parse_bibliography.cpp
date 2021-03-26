@@ -9,12 +9,6 @@
 using sparse::common::bibliography_t;
 
 
-/*
- * Problematic files to parse:
- *     1110V3b_pdf.txt
- *          - the bibliography entries do not contain [] notation
- */
-
 namespace
 {
 const std::regex bibliography_beginning("(bibliography|literature|reference)", std::regex_constants::icase);
