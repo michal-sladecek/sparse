@@ -7,8 +7,8 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU") # using GCC
 endif()
 
 set(cxx_warnings
-    "-Wall -Wno-c++98-compat-pedantic -Wno-c++98-compat -Wextra -Wpedantic -Wdouble-promotion -Wnull-dereference -Wimplicit-fallthrough \
+    "-Wall -Wextra -Wpedantic -Wdouble-promotion -Wnull-dereference -Wimplicit-fallthrough \
     -Wswitch-default -Wuninitialized -Wfloat-equal -Wshadow -Wconversion ${additional_warnings}"
 )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORTIFY_SOURCE=2 ${stack_clash_protection} -fstack-protector-strong -EHsc ${cxx_warnings}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORTIFY_SOURCE=2 ${stack_clash_protection} -fstack-protector-strong ${cxx_warnings}")
