@@ -1,5 +1,5 @@
-if(NOT ${BUILD_MODULES})
+if (NOT ${BUILD_MODULES})
     return()
-endif()
+endif ()
 
 add_subdirectory(parser)

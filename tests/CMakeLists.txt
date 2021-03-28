@@ -1,7 +1,10 @@
-if(NOT BUILD_TESTING)
+if (NOT BUILD_TESTING)
     return()
-endif()
+endif ()
+
 
 add_subdirectory(common)
+add_subdirectory(parsers)
+
 
 # TODO add catch2 tests
