@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <tuple>
 #include <unordered_map>
@@ -26,6 +27,30 @@ struct versions_t
     std::vector<std::string> ecc;             ///< versions of ecc
     std::vector<std::string> des;             ///< versions of des
 };
+
+/**
+ * @brief to_json
+ * @param j json
+ * @param versions versions object
+ */
+void to_json(nlohmann::json& j, const versions_t& versions)
+{
+    const auto add_not_empty = [&j](const std::string& key, const std::vector<std::string>& value) {
+        if (!value.empty())
+        {
+            j[key] = value;
+        }
+    };
+
+    add_not_empty("eal", versions.eal);
+    add_not_empty("global_platform", versions.global_platform);
+    add_not_empty("java_card", versions.java_card);
+    add_not_empty("sha", versions.sha);
+    add_not_empty("rsa", versions.rsa);
+    add_not_empty("ecc", versions.ecc);
+    add_not_empty("des", versions.des);
+}
+
 
 /**
  * @brief Parsed section of the certificate.
