@@ -24,7 +24,7 @@ target_link_libraries(${target}
         PRIVATE
         Catch2::Catch2
         sparse::sparse
-        nlohmann_json::nlohmann_json
+        # nlohmann_json::nlohmann_json
         )
 
 add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}>)
