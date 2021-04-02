@@ -3,6 +3,7 @@ set(target tests_parsers)
 set(sources
         ${CMAKE_CURRENT_SOURCE_DIR}/tests_parse_bibliography.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/test_parse_versions.cpp
         )
 
 
@@ -23,6 +24,7 @@ target_link_libraries(${target}
         PRIVATE
         Catch2::Catch2
         sparse::sparse
+        nlohmann_json::nlohmann_json
         )
 
 add_test(NAME ${target} COMMAND $<TARGET_FILE:${target}>)

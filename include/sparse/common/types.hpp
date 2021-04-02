@@ -33,7 +33,8 @@ struct versions_t
  * @param j json
  * @param versions versions object
  */
-void to_json(nlohmann::json& j, const versions_t& versions)
+
+inline void to_json(nlohmann::json& j, const versions_t& versions)
 {
     const auto add_not_empty = [&j](const std::string& key, const std::vector<std::string>& value) {
         if (!value.empty())
