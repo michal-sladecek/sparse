@@ -11,6 +11,7 @@ set(sources
 set(headers
     ${include_path}/parsers.hpp
     ${include_path}/title_parser.hpp
+    ${include_path}/tokens.hpp
 )
 
 add_library(${target} OBJECT ${sources} ${headers})

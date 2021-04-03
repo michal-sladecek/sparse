@@ -4,7 +4,7 @@
 
 using namespace sparse::parsers;
 
-TEST_CASE("title")
+TEST_CASE("title type 1")
 {
     std::cout << "testing title" << std::endl;
     std::string_view ss = "            BSI-DSZ-CC-1051-2019\n\n"
