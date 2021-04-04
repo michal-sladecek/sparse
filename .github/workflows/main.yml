@@ -21,58 +21,38 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: | 
-          sudo apt update
-          sudo apt install cmake ninja-build gcc-10
+          sudo apt-get update
+          sudo apt-get install cmake ninja-build gcc-10 clang-11
+          echo printing versions
           cmake --version
           ninja --version
           g++-10 --version
+          clang++-11 --version
           
       - name: g++ release unit tests
-        uses: HorstBaerbel/action-ctest@1.0
-        with:
-          sourcedir: '.'
-          builddir: 'build_gcc_release'
-          cmakeoptions: '--config Release -G Ninja -DCMAKE_CXX_COMPILER=g++-10 -DBUILD_DOC=OFF'
-          ctestoptions: ''
+        run: |
+          mkdir build_gcc_release && cd build_gcc_release
+          cmake --config Release -G Ninja -DCMAKE_CXX_COMPILER=g++-10 -DBUILD_DOC=OFF ..
+          ninja
+          ctest --output-on-failure
+          cd ..
           
-  clang-release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install dependencies
-        run: | 
-          sudo apt update
-          sudo apt install cmake ninja-build clang-11
-          cmake --version
-          ninja --version
-          clang++-11 --version
-      - uses: actions/checkout@v2
       - name: clang release unit tests
-        uses: HorstBaerbel/action-ctest@1.0
-        with:
-          sourcedir: '.'
-          builddir: 'build_clang_release'
-          cmakeoptions: '--config Release -G Ninja -DCMAKE_CXX_COMPILER=clang++-11 -DBUILD_DOC=OFF'
-          ctestoptions: ''
+        run: |
+          mkdir build_clang_release && cd build_clang_release
+          cmake --config Release -G Ninja -DCMAKE_CXX_COMPILER=clang++-11 -DBUILD_DOC=OFF ..
+          ninja
+          ctest --output-on-failure
+          cd ..
     
-  clang-with-sanitizers:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install dependencies
-        run: | 
-          sudo apt update
-          sudo apt install cmake ninja-build clang-11
-          cmake --version
-          ninja --version
-          clang++-11 --version
-      - uses: actions/checkout@v2
       - name: clang debug with sanitizers
-        uses: HorstBaerbel/action-ctest@1.0
-        with:
-          sourcedir: '.'
-          builddir: 'build_clang_debug'
-          cmakeoptions: '--config Debug -G Ninja -DCMAKE_CXX_COMPILER=clang++-11 -DBUILD_DOC=OFF -DECM_ENABLE_SANITIZERS="address;leak;undefined"'
-          ctestoptions: ''
-  
+        run: |
+          mkdir build_clang_debug && cd build_clang_debug
+          cmake --config Debug -G Ninja -DCMAKE_CXX_COMPILER=clang++-11 -DBUILD_DOC=OFF -DECM_ENABLE_SANITIZERS='address;leak;undefined' ..
+          ninja
+          ctest --output-on-failure
+          cd ..
+
       - name: Run a multi-line script
         run: |
           echo Add other actions to build,
