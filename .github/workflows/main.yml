@@ -32,7 +32,7 @@ jobs:
         with:
           sourcedir: '.'
           builddir: 'build_gcc_release'
-          cmakeoptions: '--config Release -G "Ninja" -DCMAKE_CXX_COMPILER=g++-10 -DBUILD_DOC=OFF'
+          cmakeoptions: '--config Release -G Ninja -DCMAKE_CXX_COMPILER=g++-10 -DBUILD_DOC=OFF'
           ctestoptions: ''
           
   clang-release:
@@ -51,7 +51,7 @@ jobs:
         with:
           sourcedir: '.'
           builddir: 'build_clang_release'
-          cmakeoptions: '--config Release -G "Ninja" -DCMAKE_CXX_COMPILER=clang++-11 -DBUILD_DOC=OFF'
+          cmakeoptions: '--config Release -G Ninja -DCMAKE_CXX_COMPILER=clang++-11 -DBUILD_DOC=OFF'
           ctestoptions: ''
     
   clang-with-sanitizers:
@@ -70,7 +70,7 @@ jobs:
         with:
           sourcedir: '.'
           builddir: 'build_clang_debug'
-          cmakeoptions: '--config Debug -G "Ninja" -DCMAKE_CXX_COMPILER=clang++-11 -DBUILD_DOC=OFF -DECM_ENABLE_SANITIZERS="address;leak;undefined"'
+          cmakeoptions: '--config Debug -G Ninja -DCMAKE_CXX_COMPILER=clang++-11 -DBUILD_DOC=OFF -DECM_ENABLE_SANITIZERS="address;leak;undefined"'
           ctestoptions: ''
   
       - name: Run a multi-line script
