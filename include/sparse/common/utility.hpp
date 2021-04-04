@@ -16,6 +16,5 @@ std::string load_file_into_string(const std::filesystem::path& filename);
  * @param j json
  * @param versions versions object
  */
-
 void to_json(nlohmann::json& j, const versions_t& versions);
 } // namespace sparse::common
