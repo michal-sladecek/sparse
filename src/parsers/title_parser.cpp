@@ -129,11 +129,11 @@ public:
     {
         state_t state = init{};
         transition_t t{sw_};
-        while (!std::holds_alternative<state_machine1::accept>(state) && !std::holds_alternative<state_machine1::reject>(state))
+        while (!std::holds_alternative<accept>(state) && !std::holds_alternative<reject>(state))
         {
             state = std::visit(t, state);
         }
-        if (std::holds_alternative<state_machine1::accept>(state))
+        if (std::holds_alternative<accept>(state))
         {
             return trim_result(t.title_lines);
         }
@@ -160,8 +160,10 @@ public:
     {};
     struct reject
     {};
+    struct finished_title
+    {};
 
-    using state_t = std::variant<init, parsing_title, accept, reject>;
+    using state_t = std::variant<init, parsing_title, finished_title, accept, reject>;
 
     struct transition_t
     {
@@ -197,12 +199,25 @@ public:
                 if (std::holds_alternative<tokens::w_security_traget>(*token))
                     return accept{};
                 if (std::holds_alternative<tokens::newline>(*token))
-                    return accept{};
+                    return finished_title{};
                 if (std::holds_alternative<tokens::title_line>(*token))
                 {
                     title_lines.emplace_back(std::get<tokens::title_line>(*token).matched);
                     return parsing_title{};
                 }
+            }
+            return reject{};
+        }
+
+        state_t operator()(finished_title)
+        {
+            if (const auto [token, n_read] = tokens::try_match<tokens::newline, tokens::w_security_traget>(_sw); token)
+            {
+                _sw = _sw.substr(n_read);
+                if (std::holds_alternative<tokens::w_security_traget>(*token))
+                    return accept{};
+                if (std::holds_alternative<tokens::newline>(*token))
+                    return finished_title{};
             }
             return reject{};
         }
@@ -222,11 +237,11 @@ public:
     {
         state_t state = init{};
         transition_t t{sw_};
-        while (!std::holds_alternative<state_machine2::accept>(state) && !std::holds_alternative<state_machine2::reject>(state))
+        while (!std::holds_alternative<accept>(state) && !std::holds_alternative<reject>(state))
         {
             state = std::visit(t, state);
         }
-        if (std::holds_alternative<state_machine2::accept>(state))
+        if (std::holds_alternative<accept>(state))
         {
             return trim_result(t.title_lines);
         }
