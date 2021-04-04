@@ -9,9 +9,11 @@
 
 namespace sparse::parsers
 {
-struct transition_t : public base_transition
+namespace transitions
 {
-    explicit transition_t(std::string_view sw_)
+struct has_standard_id : public base_transition
+{
+    explicit has_standard_id(std::string_view sw_)
         : base_transition{sw_}
     {}
 
@@ -91,9 +93,9 @@ struct transition_t : public base_transition
  * @brief State machine parses title based on 'Security Target Lite' string after title
  * It expects one or more title lines at the start of document, followed by the string
  */
-struct transition_2 : public base_transition
+struct ends_with_st : public base_transition
 {
-    explicit transition_2(std::string_view sw_)
+    explicit ends_with_st(std::string_view sw_)
         : base_transition{sw_}
     {}
 
@@ -155,9 +157,9 @@ struct transition_2 : public base_transition
 };
 
 
-struct transition_version : public base_transition
+struct version : public base_transition
 {
-    explicit transition_version(std::string_view sw_)
+    explicit version(std::string_view sw_)
         : base_transition{sw_}
     {}
 
@@ -227,9 +229,9 @@ struct transition_version : public base_transition
 };
 
 
-struct transition_starts_with_st : public base_transition
+struct starts_with_st : public base_transition
 {
-    explicit transition_starts_with_st(std::string_view sw_)
+    explicit starts_with_st(std::string_view sw_)
         : base_transition{sw_}
     {}
 
@@ -285,31 +287,23 @@ struct transition_starts_with_st : public base_transition
         return reject{};
     }
 };
+} // namespace transitions
 
-
-using pasre_by_id                  = state_machine<transition_t>;
-using pasre_by_sec_target_lite     = state_machine<transition_2>;
-using pasre_by_version             = state_machine<transition_version>;
-using parse_begins_with_sec_target = state_machine<transition_starts_with_st>;
+using pasre_by_id                  = state_machine<transitions::has_standard_id>;
+using pasre_by_sec_target_lite     = state_machine<transitions::ends_with_st>;
+using pasre_by_version             = state_machine<transitions::version>;
+using parse_begins_with_sec_target = state_machine<transitions::starts_with_st>;
 
 std::optional<common::title_t> parse_title(std::string_view file_)
 {
     if (const auto res = pasre_by_id::run(file_))
-    {
         return res;
-    }
     if (const auto res = pasre_by_sec_target_lite::run(file_))
-    {
         return res;
-    }
     if (const auto res = pasre_by_version::run(file_))
-    {
         return res;
-    }
     if (const auto res = parse_begins_with_sec_target::run(file_))
-    {
         return res;
-    }
 
     return {};
 }
