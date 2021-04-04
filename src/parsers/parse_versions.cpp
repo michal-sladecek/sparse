@@ -28,7 +28,7 @@ std::vector<std::string> parse_via_regex(const std::string& text, const std::reg
     auto words = std::sregex_iterator(text.begin(), text.end(), regex);
     for (auto iter = words; iter != std::sregex_iterator(); ++iter)
     {
-        parsed.emplace(remove_newlines(common::trim(iter->str(), "\t\n\v\f\r ()=//")));
+        parsed.emplace(remove_newlines(iter->str()));
     }
 
     return {parsed.begin(), parsed.end()};

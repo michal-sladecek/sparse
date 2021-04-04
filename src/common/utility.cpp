@@ -1,35 +1,12 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <nlohmann/json.hpp>
 #include <sparse/common/utility.hpp>
 #include <string>
 
 
 namespace sparse::common
 {
-namespace detail
-{
-std::string ltrim(std::string str, const std::string& chars)
-{
-    str.erase(0, str.find_first_not_of(chars));
-    return str;
-}
-
-std::string rtrim(std::string str, const std::string& chars)
-{
-    str.erase(str.find_last_not_of(chars) + 1);
-    return str;
-}
-
-} // namespace detail
-
-// implementation borrowed from http://www.martinbroadhurst.com/how-to-trim-a-stdstring.html
-std::string trim(std::string str, const std::string& chars)
-{
-    return detail::ltrim(detail::rtrim(str, chars), chars);
-}
-
 std::string load_file_into_string(const std::filesystem::path& filename)
 {
     constexpr unsigned int MB            = 1024 * 1024;
@@ -53,4 +30,26 @@ std::string load_file_into_string(const std::filesystem::path& filename)
     return std::string(std::istreambuf_iterator<char>(file_stream), std::istreambuf_iterator<char>());
 }
 
+/**
+ * @brief to_json
+ * @param j json
+ * @param versions versions object
+ */
+void to_json(nlohmann::json& j, const versions_t& versions)
+{
+    const auto add_not_empty = [&j](const std::string& key, const std::vector<std::string>& value) {
+        if (!value.empty())
+        {
+            j[key] = value;
+        }
+    };
+
+    add_not_empty("eal", versions.eal);
+    add_not_empty("global_platform", versions.global_platform);
+    add_not_empty("java_card", versions.java_card);
+    add_not_empty("sha", versions.sha);
+    add_not_empty("rsa", versions.rsa);
+    add_not_empty("ecc", versions.ecc);
+    add_not_empty("des", versions.des);
+}
 } // namespace sparse::common
