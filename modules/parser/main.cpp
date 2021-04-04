@@ -3,6 +3,7 @@
 #include <sparse/common/types.hpp>
 #include <sparse/common/utility.hpp>
 #include <sparse/parsers/parsers.hpp>
+#include <sparse/parsers/title_parser.hpp>
 #include <string>
 
 
@@ -23,6 +24,12 @@ int main(int argc, char* argv[])
         output["bibliography"] = bibliography.value();
     }
 
-    std::cout << std::setw(4) << output;
+    if (const auto title = sparse::parsers::parse_title(whole_file))
+    {
+        output["title"] = *title;
+    }
+
+
+    std::cout << std::setw(4) << output << std::endl;
     return EXIT_SUCCESS;
 }
