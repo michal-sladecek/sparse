@@ -15,7 +15,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  gcc-release:
+  build-and-run-ctest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -32,7 +32,7 @@ jobs:
       - name: g++ release unit tests
         run: |
           mkdir build_gcc_release && cd build_gcc_release
-          cmake --config Release -G Ninja -DCMAKE_CXX_COMPILER=g++-10 -DBUILD_DOC=OFF ..
+          cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_CXX_COMPILER=g++-10 -DBUILD_DOC=OFF ..
           ninja
           ctest --output-on-failure
           cd ..
@@ -40,7 +40,7 @@ jobs:
       - name: clang release unit tests
         run: |
           mkdir build_clang_release && cd build_clang_release
-          cmake --config Release -G Ninja -DCMAKE_CXX_COMPILER=clang++-11 -DBUILD_DOC=OFF ..
+          cmake -DCMAKE_BUILD_TYPE=Release -G Ninja -DCMAKE_CXX_COMPILER=clang++-11 -DBUILD_DOC=OFF ..
           ninja
           ctest --output-on-failure
           cd ..
@@ -48,7 +48,7 @@ jobs:
       - name: clang debug with sanitizers
         run: |
           mkdir build_clang_debug && cd build_clang_debug
-          cmake --config Debug -G Ninja -DCMAKE_CXX_COMPILER=clang++-11 -DBUILD_DOC=OFF -DECM_ENABLE_SANITIZERS='address;leak;undefined' ..
+          cmake -DCMAKE_BUILD_TYPE=Debug -G Ninja -DCMAKE_CXX_COMPILER=clang++-11 -DBUILD_DOC=OFF -DECM_ENABLE_SANITIZERS='address;leak;undefined' ..
           ninja
           ctest --output-on-failure
           cd ..
