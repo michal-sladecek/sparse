@@ -72,8 +72,21 @@ struct w_from : public token<w_from>
 
 struct w_security_traget : public token<w_security_traget>
 {
-    static constexpr ctll::fixed_string re = "\\h*(Security Target)( Lite)?\\h*\\n";
+    static constexpr ctll::fixed_string re = "\\h*(Security Target|SECURITY TARGET)( Lite| LITE)?\\h*\\n";
 };
 
-using tokens = std::variant<newline, std_id, w_for, w_from, title_line, w_security_traget>;
+/**
+ * @brief Matches anythin until it finds Version
+ * There is hard limit on characters before Version to assure that it's
+ * found somewhere in the beginning
+ * Example: 'bla bla\n bla Version 2020-4\n'
+ */
+struct w_version : public token<w_version>
+{
+    static constexpr ctll::fixed_string re = ".{0,1000}Version \\d{4}-\\d\\n";
+};
+
+/** variant which can hold any of the tokens **/
+using tokens = std::variant<newline, std_id, w_for, w_from, title_line, w_security_traget, w_version>;
+
 } // namespace sparse::parsers::tokens
