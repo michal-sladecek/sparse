@@ -16,12 +16,12 @@ int main(int argc, char* argv[])
 
     nlohmann::json output;
 
-    const auto versions = sparse::parsers::parse_versions(whole_file);
-    // auto bibliography = sparse::parsers::parse_bibliography(whole_file);
-    // if (bibliography.has_value())
-    //{
-    //    output["bibliography"] = bibliography.value();
-    //}
+    const auto versions     = sparse::parsers::parse_versions(whole_file);
+    const auto bibliography = sparse::parsers::parse_bibliography(whole_file);
+    if (bibliography.has_value())
+    {
+        output["bibliography"] = bibliography.value();
+    }
     output["versions"] = versions.value();
 
     std::cout << std::setw(4) << output;
