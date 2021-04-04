@@ -18,17 +18,16 @@ int main(int argc, char* argv[])
 
     nlohmann::json output;
 
-    auto bibliography = sparse::parsers::parse_bibliography(whole_file);
-    if (bibliography.has_value())
-    {
-        output["bibliography"] = bibliography.value();
-    }
-
     if (const auto title = sparse::parsers::parse_title(whole_file))
     {
         output["title"] = *title;
     }
 
+    auto bibliography = sparse::parsers::parse_bibliography(whole_file);
+    if (bibliography.has_value())
+    {
+        output["bibliography"] = bibliography.value();
+    }
 
     std::cout << std::setw(4) << output << std::endl;
     return EXIT_SUCCESS;
