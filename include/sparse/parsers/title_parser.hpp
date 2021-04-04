@@ -8,6 +8,7 @@ namespace sparse::parsers
 {
 /**
  * @brief Parses bibliography title
+ * Parsing is done using several patterns, starting from the most common one
  * @param file_ stringview of the whole file
  * @return string with title if successful, std::nullopt otherwise
  */

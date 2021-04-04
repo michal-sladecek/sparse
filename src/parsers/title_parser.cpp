@@ -11,6 +11,10 @@ namespace sparse::parsers
 {
 namespace transitions
 {
+/**
+ * @brief FSM transition for parsing the title
+ * using common ID, e.g. 'BSI-DSZ-CC-1102-2019'
+ */
 struct has_standard_id : public base_transition
 {
     explicit has_standard_id(std::string_view sw_)
@@ -85,8 +89,10 @@ struct has_standard_id : public base_transition
 };
 
 /**
- * @brief State machine parses title based on 'Security Target Lite' string after title
- * It expects one or more title lines at the start of document, followed by the string
+ * @brief FSM transition parses title based on
+ * 'Security Target Lite' string after title.
+ * It expects one or more title lines at the start
+ * of document, followed by 'Security Target Lite'.
  */
 struct ends_with_st : public base_transition
 {
@@ -146,7 +152,10 @@ struct ends_with_st : public base_transition
     using base_transition::operator();
 };
 
-
+/**
+ * @brief FSM transition parses title using
+ * version identifier, e.g. 'Version 2020-4'
+ */
 struct version : public base_transition
 {
     explicit version(std::string_view sw_)
@@ -213,7 +222,10 @@ struct version : public base_transition
     using base_transition::operator();
 };
 
-
+/**
+ * @brief FSM transition parses title based on
+ * 'Security Target Lite' string before title.
+ */
 struct starts_with_st : public base_transition
 {
     explicit starts_with_st(std::string_view sw_)
@@ -269,13 +281,13 @@ struct starts_with_st : public base_transition
 };
 } // namespace transitions
 
-using pasre_by_id                  = state_machine<transitions::has_standard_id>;
-using pasre_by_sec_target_lite     = state_machine<transitions::ends_with_st>;
-using pasre_by_version             = state_machine<transitions::version>;
-using parse_begins_with_sec_target = state_machine<transitions::starts_with_st>;
-
 std::optional<common::title_t> parse_title(std::string_view file_)
 {
+    using pasre_by_id                  = state_machine<transitions::has_standard_id>;
+    using pasre_by_sec_target_lite     = state_machine<transitions::ends_with_st>;
+    using pasre_by_version             = state_machine<transitions::version>;
+    using parse_begins_with_sec_target = state_machine<transitions::starts_with_st>;
+
     if (const auto res = pasre_by_id::run(file_))
         return res;
     if (const auto res = pasre_by_sec_target_lite::run(file_))
