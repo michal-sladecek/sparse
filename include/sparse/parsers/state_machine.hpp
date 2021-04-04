@@ -69,6 +69,13 @@ public:
 
     std::vector<std::string> title_lines{};
 
+    template <typename T>
+    state_t operator()(T)
+    {
+        std::cerr << "Entered unexpected state, rejecting." << std::endl;
+        return reject{};
+    }
+
 protected:
     std::string_view _sw;
 };

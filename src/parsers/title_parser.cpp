@@ -81,12 +81,7 @@ struct has_standard_id : public base_transition
         return accept{};
     }
 
-    template <typename T>
-    state_t operator()(T)
-    {
-        std::cerr << "Entered unexpected state, rejecting." << std::endl;
-        return reject{};
-    }
+    using base_transition::operator();
 };
 
 /**
@@ -148,12 +143,7 @@ struct ends_with_st : public base_transition
         return reject{};
     }
 
-    template <typename T>
-    state_t operator()(T)
-    {
-        std::cerr << "Entered unexpected state, rejecting." << std::endl;
-        return reject{};
-    }
+    using base_transition::operator();
 };
 
 
@@ -220,12 +210,7 @@ struct version : public base_transition
         return reject{};
     }
 
-    template <typename T>
-    state_t operator()(T)
-    {
-        std::cerr << "Entered unexpected state, rejecting." << std::endl;
-        return reject{};
-    }
+    using base_transition::operator();
 };
 
 
@@ -280,12 +265,7 @@ struct starts_with_st : public base_transition
         return accept{};
     }
 
-    template <typename T>
-    state_t operator()(T)
-    {
-        std::cerr << "Entered unexpected state, rejecting." << std::endl;
-        return reject{};
-    }
+    using base_transition::operator();
 };
 } // namespace transitions
 
