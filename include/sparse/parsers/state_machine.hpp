@@ -1,7 +1,7 @@
 #pragma once
-#include <ctre.hpp>
 #include <iostream>
 #include <optional>
+#include <sparse/common/utility.hpp>
 #include <string>
 #include <string_view>
 #include <variant>
@@ -29,15 +29,13 @@ using state_t = std::variant<init, accept, reject, got_id, got_for, parsing_titl
 template <typename TitleTransitionFn>
 class state_machine
 {
-    static std::string trim_result(const std::vector<std::string>& title_lines_)
+    static std::string get_result(const std::vector<std::string_view>& title_lines_)
     {
-        static constexpr ctll::fixed_string trim_regex{"\\h*([^\\n]*)\\n"};
-        std::string res;
-        std::string sep;
+        std::string res, sep;
         for (const auto& l : title_lines_)
         {
             res += sep;
-            res += ctre::match<trim_regex>(l).template get<1>();
+            res += common::trim_line(l);
             sep = " ";
         }
         return res;
@@ -54,7 +52,7 @@ public:
         }
         if (std::holds_alternative<accept>(state))
         {
-            return trim_result(t.title_lines);
+            return get_result(t.title_lines);
         }
         return {};
     }
@@ -67,7 +65,7 @@ public:
         : _sw{sw_}
     {}
 
-    std::vector<std::string> title_lines{};
+    std::vector<std::string_view> title_lines{};
 
     template <typename T>
     state_t operator()(T)

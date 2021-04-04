@@ -31,4 +31,11 @@ std::string load_file_into_string(const std::filesystem::path& filename)
     return std::string(std::istreambuf_iterator<char>(file_stream), std::istreambuf_iterator<char>());
 }
 
+std::string_view trim_line(std::string_view sw_)
+{
+    const auto start = std::distance(sw_.begin(), std::find_if(sw_.begin(), sw_.end(), [](auto c) { return !std::isspace(c); }));
+    const auto end   = std::distance(sw_.rbegin(), std::find_if(sw_.rbegin(), sw_.rend(), [](auto c) { return !std::isspace(c); }));
+    return sw_.substr(start, sw_.size() - (end + start));
+}
+
 } // namespace sparse::common
