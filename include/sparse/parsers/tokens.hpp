@@ -70,5 +70,10 @@ struct w_from : public token<w_from>
     static constexpr ctll::fixed_string re = "\\h*from\\n";
 };
 
-using tokens = std::variant<newline, std_id, w_for, w_from, title_line>;
+struct w_security_traget : public token<w_security_traget>
+{
+    static constexpr ctll::fixed_string re = "\\h*(Security Target)( Lite)?\\h*\\n";
+};
+
+using tokens = std::variant<newline, std_id, w_for, w_from, title_line, w_security_traget>;
 } // namespace sparse::parsers::tokens
