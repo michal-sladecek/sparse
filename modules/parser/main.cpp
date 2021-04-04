@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
     {
         output["bibliography"] = bibliography.value();
     }
-    output["versions"] = versions.value();
+    output["versions"] = versions;
 
     std::cout << std::setw(4) << output;
 }

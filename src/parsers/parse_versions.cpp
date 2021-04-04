@@ -36,7 +36,7 @@ std::vector<std::string> parse_via_regex(const std::string& text, const std::reg
 } // namespace detail
 
 
-std::optional<common::versions_t> parse_versions(const std::string& certificate) noexcept
+common::versions_t parse_versions(const std::string& certificate) noexcept
 {
     using namespace detail;
 
