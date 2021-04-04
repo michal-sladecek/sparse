@@ -4,6 +4,7 @@
 #include <string>
 #include <tuple>
 #include <unordered_map>
+#include <nlohmann/json.hpp>
 #include <vector>
 
 namespace sparse::common
@@ -41,6 +42,15 @@ struct section_t
  * @brief Parsed table of contents of the certificate
  */
 using table_of_contents_t = std::vector<section_t>;
+
+inline void to_json(nlohmann::json& j, const section_t& section)
+{
+    nlohmann::json array = nlohmann::json::array();
+    array.push_back(section.id);
+    array.push_back(section.name);
+    array.push_back(section.page_number);
+    j = array;
+}
 
 /**
  * @brief Parsed revision of the certificate.

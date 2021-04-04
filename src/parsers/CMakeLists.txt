@@ -7,6 +7,7 @@ set(sources
     ${source_path}/parse_bibliography.cpp
     ${source_path}/title_parser.cpp
     ${source_path}/parse_versions.cpp
+        ${source_path}/parse_toc.cpp
 )
 
 set(headers
@@ -29,3 +30,4 @@ target_link_libraries(${target}
     ctre
     nlohmann_json::nlohmann_json
 )
+
