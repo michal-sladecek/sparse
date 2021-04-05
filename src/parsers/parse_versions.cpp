@@ -8,7 +8,7 @@ namespace sparse::parsers
 namespace detail
 {
 const static std::regex eal_regex("EAL[ ]?\\d[+]?");
-const static std::regex global_platform_regex("Global[ ]?Platform (\\d.\\d.\\d|\\d.\\d)");
+const static std::regex global_platform_regex("Global[ ]?Platform (\\d\\.\\d\\.\\d|\\d\\.\\d)");
 const static std::regex java_card_regex("Java Card (\\d\\.\\d\\.\\d|\\d)");
 const static std::regex sha_regex("SHA[- _]?[\n]?(224|256|384|512|1|2|3)");
 const static std::regex rsa_regex("RSA([ _]?(2048|4096|1024)|-CRT|SignaturePKCS1|SSA-PSS)");
