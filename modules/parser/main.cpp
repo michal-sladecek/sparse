@@ -3,7 +3,6 @@
 #include <sparse/common/types.hpp>
 #include <sparse/common/utility.hpp>
 #include <sparse/parsers/parsers.hpp>
-#include <sparse/parsers/title_parser.hpp>
 #include <string>
 
 

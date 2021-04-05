@@ -10,7 +10,6 @@ set(sources
 
 set(headers
     ${include_path}/parsers.hpp
-    ${include_path}/title_parser.hpp
     ${include_path}/tokens.hpp
     ${include_path}/state_machine.hpp
 )

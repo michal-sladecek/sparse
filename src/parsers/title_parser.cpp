@@ -1,7 +1,7 @@
 #include <ctre.hpp>
 #include <iostream>
+#include <sparse/parsers/parsers.hpp>
 #include <sparse/parsers/state_machine.hpp>
-#include <sparse/parsers/title_parser.hpp>
 #include <sparse/parsers/tokens.hpp>
 #include <string_view>
 #include <variant>
@@ -294,20 +294,20 @@ struct starts_with_st : public base_transition
 };
 } // namespace transitions
 
-std::optional<common::title_t> parse_title(std::string_view file_)
+std::optional<common::title_t> parse_title(std::string_view file)
 {
     using parse_by_id                  = state_machine<transitions::has_standard_id>;
     using parse_by_sec_target_lite     = state_machine<transitions::ends_with_st>;
     using parse_by_version             = state_machine<transitions::version>;
     using parse_begins_with_sec_target = state_machine<transitions::starts_with_st>;
 
-    if (const auto res = parse_by_id::run(file_))
+    if (const auto res = parse_by_id::run(file))
         return res;
-    if (const auto res = parse_by_sec_target_lite::run(file_))
+    if (const auto res = parse_by_sec_target_lite::run(file))
         return res;
-    if (const auto res = parse_by_version::run(file_))
+    if (const auto res = parse_by_version::run(file))
         return res;
-    if (const auto res = parse_begins_with_sec_target::run(file_))
+    if (const auto res = parse_begins_with_sec_target::run(file))
         return res;
 
     return {};

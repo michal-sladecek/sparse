@@ -1,6 +1,6 @@
 #include <catch2/catch.hpp>
 #include <iostream>
-#include <sparse/parsers/title_parser.hpp>
+#include <sparse/parsers/parsers.hpp>
 
 using namespace sparse::parsers;
 
