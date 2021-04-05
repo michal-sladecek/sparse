@@ -44,10 +44,10 @@ class state_machine
      * @param title_lines_ lines matched during FSM execution
      * @return std::string with title
      */
-    static std::string get_result(const std::vector<std::string_view>& title_lines_)
+    static std::string get_result(const std::vector<std::string_view>& title_lines)
     {
         std::string res, sep;
-        for (const auto& l : title_lines_)
+        for (const auto& l : title_lines)
         {
             res += sep;
             res += common::trim_line(l);
@@ -62,10 +62,10 @@ public:
      * @param sw_ string to parse
      * @return document title on success, std::nullopt otherwise
      */
-    static std::optional<std::string> run(std::string_view sw_)
+    static std::optional<std::string> run(std::string_view sw)
     {
         state_t state = init{};
-        TitleTransitionFn t{sw_};
+        TitleTransitionFn t{sw};
         while (!std::holds_alternative<accept>(state) && !std::holds_alternative<reject>(state))
         {
             state = std::visit(t, state);
@@ -102,8 +102,8 @@ public:
      * changed during the execution
      * @param sw_ string to search for title
      */
-    explicit base_transition(std::string_view sw_)
-        : _sw{sw_}
+    explicit base_transition(std::string_view sw)
+        : _sw{sw}
     {}
 
     std::vector<std::string_view> title_lines{}; ///< Matched title lines

@@ -25,8 +25,8 @@ namespace transitions
  */
 struct has_standard_id : public base_transition
 {
-    explicit has_standard_id(std::string_view sw_)
-        : base_transition{sw_}
+    explicit has_standard_id(std::string_view sw)
+        : base_transition{sw}
     {}
 
     state_t operator()(init)
@@ -110,8 +110,8 @@ struct has_standard_id : public base_transition
  */
 struct ends_with_st : public base_transition
 {
-    explicit ends_with_st(std::string_view sw_)
-        : base_transition{sw_}
+    explicit ends_with_st(std::string_view sw)
+        : base_transition{sw}
     {}
 
     state_t operator()(init)
@@ -178,8 +178,8 @@ struct ends_with_st : public base_transition
  */
 struct version : public base_transition
 {
-    explicit version(std::string_view sw_)
-        : base_transition{sw_}
+    explicit version(std::string_view sw)
+        : base_transition{sw}
     {}
 
     state_t operator()(init)
@@ -241,8 +241,8 @@ struct version : public base_transition
  */
 struct starts_with_st : public base_transition
 {
-    explicit starts_with_st(std::string_view sw_)
-        : base_transition{sw_}
+    explicit starts_with_st(std::string_view sw)
+        : base_transition{sw}
     {}
 
     state_t operator()(init)
