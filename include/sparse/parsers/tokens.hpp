@@ -18,7 +18,7 @@ namespace detail
  * @return token with match and matched size
  */
 template <typename Ret, typename First, typename... Rest>
-Ret _try_match_tokens(std::string_view sw_)
+Ret try_match_tokens(std::string_view sw_)
 {
     First t{};
     if (t.match(sw_))
@@ -27,7 +27,7 @@ Ret _try_match_tokens(std::string_view sw_)
     }
     if constexpr (sizeof...(Rest) > 0)
     {
-        return _try_match_tokens<Ret, Rest...>(sw_);
+        return try_match_tokens<Ret, Rest...>(sw_);
     }
     return {std::nullopt, 0};
 }
@@ -40,7 +40,7 @@ Ret _try_match_tokens(std::string_view sw_)
 template <typename First, typename... Rest, typename Ret = std::pair<std::optional<std::variant<First, Rest...>>, size_t>>
 Ret try_match(std::string_view ss)
 {
-    return detail::_try_match_tokens<Ret, First, Rest...>(ss);
+    return detail::try_match_tokens<Ret, First, Rest...>(ss);
 }
 
 /**
