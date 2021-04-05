@@ -14,7 +14,7 @@ namespace detail
  * @tparam Ret Return type
  * @tparam First First token
  * @tparam Rest Rest of the tokens
- * @param sw_ string view
+ * @param sw string view
  * @return token with match and matched size
  */
 template <typename Ret, typename First, typename... Rest>
@@ -53,7 +53,7 @@ struct token
     /**
      * @brief Tries to match given string with token regex
      * Stores the match if successful
-     * @param sw_ string to match
+     * @param sw string to match
      * @return true if matched
      */
     bool match(std::string_view sw)

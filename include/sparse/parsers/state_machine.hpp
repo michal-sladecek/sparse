@@ -59,7 +59,7 @@ class state_machine
 public:
     /**
      * @brief Runs the state machine, stops when <accept> or <reject> state is reached
-     * @param sw_ string to parse
+     * @param sw string to parse
      * @return document title on success, std::nullopt otherwise
      */
     static std::optional<std::string> run(std::string_view sw)
@@ -100,7 +100,7 @@ public:
     /**
      * @brief Constructor stores the string view, it gets
      * changed during the execution
-     * @param sw_ string to search for title
+     * @param sw string to search for title
      */
     explicit base_transition(std::string_view sw)
         : _sw{sw}
