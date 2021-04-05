@@ -6,7 +6,20 @@
 
 namespace sparse::parsers
 {
-std::optional<common::bibliography_t> parse_bibliography(const std::string&) noexcept;
+/**
+ * @brief Parses bibliography
+ * @param the whole loaded file
+ * @return parsed bibliography
+ */
+std::optional<common::bibliography_t> parse_bibliography(const std::string& whole_file) noexcept;
+
+/**
+ * @brief Parses title
+ * Parsing is done using several patterns, starting from the most common one
+ * @param file stringview of the whole file
+ * @return string with title if successful, std::nullopt otherwise
+ */
+std::optional<common::title_t> parse_title(std::string_view file);
 
 /**
  * @brief parses versions of the certificate
@@ -14,4 +27,5 @@ std::optional<common::bibliography_t> parse_bibliography(const std::string&) noe
  * @return parsed versions
  */
 common::versions_t parse_versions(const std::string& certificate) noexcept;
+
 } // namespace sparse::parsers
