@@ -6,6 +6,7 @@ set(include_path "${CMAKE_SOURCE_DIR}/include/${PROJECT_NAME}/${target}")
 set(sources
     ${source_path}/parse_bibliography.cpp
     ${source_path}/title_parser.cpp
+    ${source_path}/parse_versions.cpp
 )
 
 set(headers
@@ -26,4 +27,5 @@ target_include_directories(${target}
 target_link_libraries(${target}
     PUBLIC
     ctre
+    nlohmann_json::nlohmann_json
 )

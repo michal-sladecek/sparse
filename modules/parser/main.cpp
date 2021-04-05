@@ -13,16 +13,18 @@ int main(int argc, char* argv[])
         std::cerr << "Missing filename argument" << std::endl;
         return EXIT_FAILURE;
     }
-    auto whole_file = sparse::common::load_file_into_string(argv[1]);
+    const auto whole_file = sparse::common::load_file_into_string(argv[1]);
 
     nlohmann::json output;
+    const auto versions     = sparse::parsers::parse_versions(whole_file);
+    const auto bibliography = sparse::parsers::parse_bibliography(whole_file);
 
     if (const auto title = sparse::parsers::parse_title(whole_file))
     {
         output["title"] = *title;
     }
 
-    auto bibliography = sparse::parsers::parse_bibliography(whole_file);
+    output["versions"] = versions;
     if (bibliography.has_value())
     {
         output["bibliography"] = bibliography.value();

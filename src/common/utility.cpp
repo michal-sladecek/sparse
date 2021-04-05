@@ -1,7 +1,6 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <nlohmann/json.hpp>
 #include <sparse/common/utility.hpp>
 #include <string>
 
@@ -36,6 +35,24 @@ std::string_view trim_line(std::string_view sw_)
     const auto start = std::distance(sw_.begin(), std::find_if(sw_.begin(), sw_.end(), [](auto c) { return !std::isspace(c); }));
     const auto end   = std::distance(sw_.rbegin(), std::find_if(sw_.rbegin(), sw_.rend(), [](auto c) { return !std::isspace(c); }));
     return sw_.substr(start, sw_.size() - (end + start));
+}
+
+void to_json(nlohmann::json& j, const versions_t& versions)
+{
+    const auto add_not_empty = [&j](const std::string& key, const std::vector<std::string>& value) {
+        if (!value.empty())
+        {
+            j[key] = value;
+        }
+    };
+
+    add_not_empty("eal", versions.eal);
+    add_not_empty("global_platform", versions.global_platform);
+    add_not_empty("java_card", versions.java_card);
+    add_not_empty("sha", versions.sha);
+    add_not_empty("rsa", versions.rsa);
+    add_not_empty("ecc", versions.ecc);
+    add_not_empty("des", versions.des);
 }
 
 } // namespace sparse::common

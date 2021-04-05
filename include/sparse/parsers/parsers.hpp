@@ -16,4 +16,11 @@ std::optional<common::bibliography_t> parse_bibliography(const std::string&) noe
  */
 std::optional<common::title_t> parse_title(std::string_view file);
 
+/**
+ * @brief parses versions of the certificate
+ * @param certificate the whole loaded certificate
+ * @return parsed versions
+ */
+common::versions_t parse_versions(const std::string& certificate) noexcept;
+
 } // namespace sparse::parsers

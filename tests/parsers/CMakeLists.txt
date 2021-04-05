@@ -1,10 +1,11 @@
 set(target tests_parsers)
 
 set(sources
-    ${CMAKE_CURRENT_SOURCE_DIR}/tests_parse_bibliography.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/tests_parse_title.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-)
+        ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests_parse_bibliography.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests_parse_title.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests_parse_versions.cpp
+        )
 
 
 file(GLOB test_data "test_data/*.txt")
