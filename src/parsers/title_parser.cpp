@@ -283,16 +283,16 @@ struct starts_with_st : public base_transition
 
 std::optional<common::title_t> parse_title(std::string_view file_)
 {
-    using pasre_by_id                  = state_machine<transitions::has_standard_id>;
-    using pasre_by_sec_target_lite     = state_machine<transitions::ends_with_st>;
-    using pasre_by_version             = state_machine<transitions::version>;
+    using parse_by_id                  = state_machine<transitions::has_standard_id>;
+    using parse_by_sec_target_lite     = state_machine<transitions::ends_with_st>;
+    using parse_by_version             = state_machine<transitions::version>;
     using parse_begins_with_sec_target = state_machine<transitions::starts_with_st>;
 
-    if (const auto res = pasre_by_id::run(file_))
+    if (const auto res = parse_by_id::run(file_))
         return res;
-    if (const auto res = pasre_by_sec_target_lite::run(file_))
+    if (const auto res = parse_by_sec_target_lite::run(file_))
         return res;
-    if (const auto res = pasre_by_version::run(file_))
+    if (const auto res = parse_by_version::run(file_))
         return res;
     if (const auto res = parse_begins_with_sec_target::run(file_))
         return res;
