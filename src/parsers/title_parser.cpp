@@ -31,12 +31,12 @@ struct has_standard_id : public base_transition
 
     state_t operator()(init)
     {
-        if (const auto [token, n_read] = tokens::try_match<tokens::newline, tokens::std_id>(_sw); token)
+        if (const auto [token, n_read] = tokens::try_match<tokens::newline, tokens::common_id>(_sw); token)
         {
             _sw = _sw.substr(n_read);
             if (std::holds_alternative<tokens::newline>(*token))
                 return init{};
-            if (std::holds_alternative<tokens::std_id>(*token))
+            if (std::holds_alternative<tokens::common_id>(*token))
                 return got_id{};
         }
         return reject{};
@@ -44,12 +44,12 @@ struct has_standard_id : public base_transition
 
     state_t operator()(got_id)
     {
-        if (const auto [token, n_read] = tokens::try_match<tokens::newline, tokens::w_for, tokens::title_line>(_sw); token)
+        if (const auto [token, n_read] = tokens::try_match<tokens::newline, tokens::word_for, tokens::title_line>(_sw); token)
         {
             _sw = _sw.substr(n_read);
             if (std::holds_alternative<tokens::newline>(*token))
                 return got_id{};
-            if (std::holds_alternative<tokens::w_for>(*token))
+            if (std::holds_alternative<tokens::word_for>(*token))
                 return got_for{};
             if (std::holds_alternative<tokens::title_line>(*token))
             {
@@ -116,10 +116,10 @@ struct ends_with_st : public base_transition
 
     state_t operator()(init)
     {
-        if (const auto [token, n_read] = tokens::try_match<tokens::w_security_traget, tokens::newline, tokens::title_line>(_sw); token)
+        if (const auto [token, n_read] = tokens::try_match<tokens::word_security_traget, tokens::newline, tokens::title_line>(_sw); token)
         {
             _sw = _sw.substr(n_read);
-            if (std::holds_alternative<tokens::w_security_traget>(*token))
+            if (std::holds_alternative<tokens::word_security_traget>(*token))
                 return reject{};
             if (std::holds_alternative<tokens::newline>(*token))
                 return init{};
@@ -134,10 +134,10 @@ struct ends_with_st : public base_transition
 
     state_t operator()(parsing_title)
     {
-        if (const auto [token, n_read] = tokens::try_match<tokens::w_security_traget, tokens::newline, tokens::title_line>(_sw); token)
+        if (const auto [token, n_read] = tokens::try_match<tokens::word_security_traget, tokens::newline, tokens::title_line>(_sw); token)
         {
             _sw = _sw.substr(n_read);
-            if (std::holds_alternative<tokens::w_security_traget>(*token))
+            if (std::holds_alternative<tokens::word_security_traget>(*token))
                 return accept{};
             if (std::holds_alternative<tokens::newline>(*token))
                 return finished_title{};
@@ -152,10 +152,10 @@ struct ends_with_st : public base_transition
 
     state_t operator()(finished_title)
     {
-        if (const auto [token, n_read] = tokens::try_match<tokens::newline, tokens::w_security_traget>(_sw); token)
+        if (const auto [token, n_read] = tokens::try_match<tokens::newline, tokens::word_security_traget>(_sw); token)
         {
             _sw = _sw.substr(n_read);
-            if (std::holds_alternative<tokens::w_security_traget>(*token))
+            if (std::holds_alternative<tokens::word_security_traget>(*token))
                 return accept{};
             if (std::holds_alternative<tokens::newline>(*token))
                 return finished_title{};
@@ -184,11 +184,11 @@ struct version : public base_transition
 
     state_t operator()(init)
     {
-        const auto [token, n_read] = tokens::try_match<tokens::w_version>(_sw);
+        const auto [token, n_read] = tokens::try_match<tokens::word_version>(_sw);
         if (token)
         {
             _sw = _sw.substr(n_read);
-            if (std::holds_alternative<tokens::w_version>(*token))
+            if (std::holds_alternative<tokens::word_version>(*token))
                 return got_version{};
         }
         return reject{};
@@ -247,10 +247,10 @@ struct starts_with_st : public base_transition
 
     state_t operator()(init)
     {
-        if (const auto [token, n_read] = tokens::try_match<tokens::w_security_traget, tokens::newline>(_sw); token)
+        if (const auto [token, n_read] = tokens::try_match<tokens::word_security_traget, tokens::newline>(_sw); token)
         {
             _sw = _sw.substr(n_read);
-            if (std::holds_alternative<tokens::w_security_traget>(*token))
+            if (std::holds_alternative<tokens::word_security_traget>(*token))
                 return got_security_target{};
             if (std::holds_alternative<tokens::newline>(*token))
                 return init{};

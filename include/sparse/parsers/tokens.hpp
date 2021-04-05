@@ -18,16 +18,16 @@ namespace detail
  * @return token with match and matched size
  */
 template <typename Ret, typename First, typename... Rest>
-Ret try_match_tokens(std::string_view sw_)
+Ret try_match_tokens(std::string_view sw)
 {
     First t{};
-    if (t.match(sw_))
+    if (t.match(sw))
     {
         return {t, t.matched.size()};
     }
     if constexpr (sizeof...(Rest) > 0)
     {
-        return try_match_tokens<Ret, Rest...>(sw_);
+        return try_match_tokens<Ret, Rest...>(sw);
     }
     return {std::nullopt, 0};
 }
@@ -56,9 +56,9 @@ struct token
      * @param sw_ string to match
      * @return true if matched
      */
-    bool match(std::string_view sw_)
+    bool match(std::string_view sw)
     {
-        if (const auto res = ctre::starts_with<T::re>(sw_))
+        if (const auto res = ctre::starts_with<T::re>(sw))
         {
             matched = res.to_view();
             return true;
@@ -72,11 +72,11 @@ struct newline : public token<newline>
 {
     static constexpr ctll::fixed_string re = "\\h*\\n"; ///< Sequence of whitespace characters and '\n'
 };
-struct std_id : public token<std_id>
+struct common_id : public token<common_id>
 {
     static constexpr ctll::fixed_string re = "\\h*BSI-DSZ-CC(-[A-Z0-9]{1,5})+\\n"; ///< ID commonly used in reports
 };
-struct w_for : public token<w_for>
+struct word_for : public token<word_for>
 {
     static constexpr ctll::fixed_string re = "\\h*for\\n"; ///< Line containing 'for' keyword
 };
@@ -84,7 +84,7 @@ struct title_line : public token<title_line>
 {
     static constexpr ctll::fixed_string re = "\\h*([^\\n]+)\\n"; ///< Single line of title, can be anything
 };
-struct w_from : public token<w_from>
+struct word_from : public token<word_from>
 {
     static constexpr ctll::fixed_string re = "\\h*from\\n"; ///< Line containing 'from' keyword
 };
@@ -93,7 +93,7 @@ struct w_from : public token<w_from>
  * @brief Matches either 'Security Target Lite' or 'SECURITY TARGET LITE'
  * the 'Lite' word is optional in both cases
  */
-struct w_security_traget : public token<w_security_traget>
+struct word_security_traget : public token<word_security_traget>
 {
     static constexpr ctll::fixed_string re = "\\h*(Security Target|SECURITY TARGET)( Lite| LITE)?\\h*\\n";
 };
@@ -104,12 +104,12 @@ struct w_security_traget : public token<w_security_traget>
  * found somewhere in the beginning
  * Example: 'bla bla\n bla Version 2020-4\n'
  */
-struct w_version : public token<w_version>
+struct word_version : public token<word_version>
 {
     static constexpr ctll::fixed_string re = ".{0,1000}Version \\d{4}-\\d\\n";
 };
 
 /** variant which can hold any of the tokens **/
-using tokens = std::variant<newline, std_id, w_for, w_from, title_line, w_security_traget, w_version>;
+using tokens = std::variant<newline, common_id, word_for, word_from, title_line, word_security_traget, word_version>;
 
 } // namespace sparse::parsers::title::tokens
