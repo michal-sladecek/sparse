@@ -30,11 +30,6 @@ std::string load_file_into_string(const std::filesystem::path& filename)
     return std::string(std::istreambuf_iterator<char>(file_stream), std::istreambuf_iterator<char>());
 }
 
-/**
- * @brief to_json
- * @param j json
- * @param versions versions object
- */
 void to_json(nlohmann::json& j, const versions_t& versions)
 {
     const auto add_not_empty = [&j](const std::string& key, const std::vector<std::string>& value) {

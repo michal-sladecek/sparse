@@ -15,14 +15,14 @@ int main(int argc, char* argv[])
     auto whole_file = sparse::common::load_file_into_string(argv[1]);
 
     nlohmann::json output;
-
     const auto versions     = sparse::parsers::parse_versions(whole_file);
     const auto bibliography = sparse::parsers::parse_bibliography(whole_file);
+
+    output["versions"] = versions;
     if (bibliography.has_value())
     {
         output["bibliography"] = bibliography.value();
     }
-    output["versions"] = versions;
 
     std::cout << std::setw(4) << output;
 }
