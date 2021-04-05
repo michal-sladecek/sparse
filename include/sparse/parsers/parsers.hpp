@@ -6,10 +6,15 @@
 
 namespace sparse::parsers
 {
-std::optional<common::bibliography_t> parse_bibliography(const std::string&) noexcept;
+/**
+ * @brief Parses bibliography
+ * @param the whole loaded file
+ * @return parsed bibliography
+ */
+std::optional<common::bibliography_t> parse_bibliography(const std::string& whole_file) noexcept;
 
 /**
- * @brief Parses bibliography title
+ * @brief Parses title
  * Parsing is done using several patterns, starting from the most common one
  * @param file stringview of the whole file
  * @return string with title if successful, std::nullopt otherwise
