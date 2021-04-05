@@ -9,6 +9,7 @@
 
 namespace sparse::parsers
 {
+using namespace title;
 namespace transitions
 {
 /**

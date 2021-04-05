@@ -7,7 +7,7 @@
 #include <variant>
 #include <vector>
 
-namespace sparse::parsers
+namespace sparse::parsers::title
 {
 inline namespace states
 {
@@ -124,4 +124,4 @@ protected:
     std::string_view _sw; ///< Local copy of the string view
 };
 
-} // namespace sparse::parsers
+} // namespace sparse::parsers::title

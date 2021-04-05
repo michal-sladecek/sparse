@@ -6,7 +6,7 @@
 #include <tuple>
 #include <variant>
 
-namespace sparse::parsers::tokens
+namespace sparse::parsers::title::tokens
 {
 namespace detail
 {
@@ -112,4 +112,4 @@ struct w_version : public token<w_version>
 /** variant which can hold any of the tokens **/
 using tokens = std::variant<newline, std_id, w_for, w_from, title_line, w_security_traget, w_version>;
 
-} // namespace sparse::parsers::tokens
+} // namespace sparse::parsers::title::tokens
