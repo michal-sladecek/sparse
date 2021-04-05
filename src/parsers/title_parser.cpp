@@ -14,6 +14,13 @@ namespace transitions
 /**
  * @brief FSM transition for parsing the title
  * using common ID, e.g. 'BSI-DSZ-CC-1102-2019'
+ *
+ * Possible transitions between states:
+ *
+ * <init> -> { <init>, <got_id>, <reject> }
+ * <got_id> -> { <got_id>, <got_for>, <parsing_title>, <reject> }
+ * <got_for> -> { <got_for>, <parsing_title>, <reject> }
+ * <parsing_title> -> { <parsing_title>, <accept> }
  */
 struct has_standard_id : public base_transition
 {
@@ -93,6 +100,12 @@ struct has_standard_id : public base_transition
  * 'Security Target Lite' string after title.
  * It expects one or more title lines at the start
  * of document, followed by 'Security Target Lite'.
+ *
+ * Possible transitions between states:
+ *
+ * <init> -> { <init>, <parsing_title>, <reject> }
+ * <parsing_title> -> { <parsing_title>, <finished_title>, <accept>, <reject> }
+ * <finished_title> -> { <finished_title>, <accept>, <reject> }
  */
 struct ends_with_st : public base_transition
 {
@@ -155,6 +168,12 @@ struct ends_with_st : public base_transition
 /**
  * @brief FSM transition parses title using
  * version identifier, e.g. 'Version 2020-4'
+ *
+ * Possible transitions between states:
+ *
+ * <init> -> { <got_version>, <reject> }
+ * <got_version> -> { <got_version>, <parsing_title>, <reject> }
+ * <parsing_title> -> { <parsing_title>, <accept>, <reject> }
  */
 struct version : public base_transition
 {
@@ -206,25 +225,18 @@ struct version : public base_transition
         return reject{};
     }
 
-    state_t operator()(finished_title)
-    {
-        if (const auto [token, n_read] = tokens::try_match<tokens::newline, tokens::w_security_traget>(_sw); token)
-        {
-            _sw = _sw.substr(n_read);
-            if (std::holds_alternative<tokens::w_security_traget>(*token))
-                return accept{};
-            if (std::holds_alternative<tokens::newline>(*token))
-                return finished_title{};
-        }
-        return reject{};
-    }
-
     using base_transition::operator();
 };
 
 /**
  * @brief FSM transition parses title based on
  * 'Security Target Lite' string before title.
+ *
+ * Possible transitions between states:
+ *
+ * <init> -> { <init>, <got_security_target>, <reject> }
+ * <got_security_target> -> { <got_security_target>, <parsing_title>, <reject> }
+ * <parsing_title> -> { <parsing_title>, <accept> }
  */
 struct starts_with_st : public base_transition
 {

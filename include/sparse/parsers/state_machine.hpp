@@ -28,8 +28,13 @@ struct got_security_target{};
 using state_t = std::variant<init, accept, reject, got_id, got_for, parsing_title, finished_title, got_version, got_security_target>;
 
 /**
- * @brief State machine for parsing title
  * @tparam TitleTransitionFn Functor which defines valid transitions
+ * @brief State machine for parsing title
+ *
+ * A state_machine run starts in <init> state, the call operators of
+ * TitleTransitionFn are invoked repeatedly, updating state, until
+ * <accept> or <reject> state is reached. If run ended in <accept>
+ * state, result title lines are trimmed and returned
  */
 template <typename TitleTransitionFn>
 class state_machine
@@ -53,7 +58,7 @@ class state_machine
 
 public:
     /**
-     * @brief Runs the state machine, stops when 'accept' or 'reject' state is reached
+     * @brief Runs the state machine, stops when <accept> or <reject> state is reached
      * @param sw_ string to parse
      * @return document title on success, std::nullopt otherwise
      */
@@ -75,6 +80,19 @@ public:
 
 /**
  * @brief Base class for all FSM transition functors
+ *
+ * Child classes should implement a set of overloaded call operators,
+ * which take <state> as an argument, and return next
+ * state stored in 'state_t'. These operators are responsible for
+ * updating '_sw' and 'title_lines' members.
+ *
+ * Example:
+ *   state_t operator()(init){ return accept{}; }
+ * Will provide state machine with simple transition function
+ * <init> -> { <accept> }
+ *
+ * Class also providies default transition for any unhandled state T:
+ * <T> -> { <reject> }
  */
 class base_transition
 {
@@ -91,7 +109,7 @@ public:
     std::vector<std::string_view> title_lines{}; ///< Matched title lines
 
     /**
-     * @brief Hungry template for unhanled states
+     * @brief Hungry template for unhandled states
      * @tparam T Any state
      * @return reject by default
      */
