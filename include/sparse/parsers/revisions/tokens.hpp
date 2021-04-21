@@ -69,30 +69,29 @@ struct token
     std::string_view matched; ///< Mached substring
 };
 
-// ToDo: add regular expressions
 struct header : public token<header>
 {
-    // static constexpr ctll::fixed_string re = "\\h*\\n"; ///< Sequence of whitespace characters and Revision History or Version Control
+    static constexpr ctll::fixed_string re = "^(.|\\n|\\n\\r)*(Revision History|Version Control)";
 };
 
 struct version_description : public token<version_description>
 {
-    // static constexpr ctll::fixed_string re = "\\h*\\n"; ///< Sequence of whitespace characters and Revision History or Version Control
+    static constexpr ctll::fixed_string re = "^(.|\\n|\\n\\r)*Version(\\h*)+Description of change";
 };
 
 struct revision_date_description : public token<revision_date_description>
 {
-    // static constexpr ctll::fixed_string re = "\\h*\\n"; ///< Sequence of whitespace characters and Revision History or Version Control
+    static constexpr ctll::fixed_string re = "^(.|\\n|\\n\\r)*(Rev|Revision|Version)(\\h*)+(Date|Release Date)(\\h*)+(Description number|Description)(\\h*)+";
 };
 
 struct date_version_change : public token<date_version_change>
 {
-    // static constexpr ctll::fixed_string re = "\\h*\\n"; ///< Sequence of whitespace characters and Revision History or Version Control
+    static constexpr ctll::fixed_string re = "^(.|\\n|\\n\\r)*Date(\\h*)+Version(\\h*)+Change notice(\\h*)+";
 };
 
 struct version_date_author_changes : public token<version_date_author_changes>
 {
-    // static constexpr ctll::fixed_string re = "\\h*\\n"; ///< Sequence of whitespace characters and Revision History or Version Control
+    static constexpr ctll::fixed_string re = "^(.|\n|\n\r)*Version(\\h*)+Date(\\h*)+Author(\\h*)+Changes to Previous version";
 };
 
 } // namespace sparse::parsers::revisions
