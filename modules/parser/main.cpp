@@ -21,58 +21,35 @@ struct options_t
     std::vector<fs::path> items_to_parse;
 };
 
+/**
+ * @brief Prints program description to standard output
+ */
 void print_help_message()
 {
-    std::cout << "SPARSE TODO: Description\n";
+    std::cout << "SPARSE: Certificate text-to-json parser\n\n";
+    std::cout << "Program expects one or more paths either to directory with \n";
+    std::cout << "certifiactes, or to certificate itself, program will create \n";
+    std::cout << "'.json' file with parsed content in the same directory as \n";
+    std::cout << "the input file.\n";
     std::cout << "\nSupported program arguments:\n";
 }
 
+/**
+ * @brief Parses program options
+ * @param argc_ argc
+ * @param argv_ argv
+ * @return filled options_t struct
+ */
 options_t parse_program_options(int argc_, char* argv_[]);
 
-void parse_file(fs::path path_, const options_t& options_)
-{
-    try
-    {
-        const auto whole_file = sparse::common::load_file_into_string(path_);
-        nlohmann::json output;
-        std::cout << "Parsing " << path_ << std::endl;
-        if (options_.parse_title)
-        {
-            if (const auto title = sparse::parsers::parse_title(whole_file))
-            {
-                output["title"] = *title;
-            }
-        }
-        if (options_.parse_versions)
-        {
-            const auto versions = sparse::parsers::parse_versions(whole_file);
-            output["versions"]  = versions;
-        }
-        // TODO: add TOC
-        // TODO: add Revisions
-        if (options_.parse_bib)
-        {
-            if (const auto bibliography = sparse::parsers::parse_bibliography(whole_file))
-            {
-                output["bibliography"] = bibliography.value();
-            }
-        }
-
-        if (options_.use_cout)
-        {
-            std::cout << std::setw(4) << output << std::endl;
-        }
-
-        path_.replace_extension(".json");
-        std::ofstream ofs{path_};
-        ofs << std::setw(4) << output << std::endl;
-    }
-    catch (const std::runtime_error& e_)
-    {
-        std::cerr << "Failed to parse " << path_ << "\n";
-        std::cerr << "Error: " << e_.what() << std::endl;
-    }
-}
+/**
+ * @brief Parses one input file according to given options
+ * Creates output file with '.json' extension
+ * in the same directory as intput file
+ * @param path_ path to input file
+ * @param options_ parsed program options
+ */
+void parse_file(fs::path path_, const options_t& options_);
 
 int main(int argc, char* argv[])
 {
@@ -153,4 +130,49 @@ options_t parse_program_options(int argc_, char* argv_[])
     }
 
     return o;
+}
+
+void parse_file(fs::path path_, const options_t& options_)
+{
+    try
+    {
+        const auto whole_file = sparse::common::load_file_into_string(path_);
+        nlohmann::json output;
+        std::cout << "Parsing " << path_ << std::endl;
+        if (options_.parse_title)
+        {
+            if (const auto title = sparse::parsers::parse_title(whole_file))
+            {
+                output["title"] = *title;
+            }
+        }
+        if (options_.parse_versions)
+        {
+            const auto versions = sparse::parsers::parse_versions(whole_file);
+            output["versions"]  = versions;
+        }
+        // TODO: add TOC
+        // TODO: add Revisions
+        if (options_.parse_bib)
+        {
+            if (const auto bibliography = sparse::parsers::parse_bibliography(whole_file))
+            {
+                output["bibliography"] = bibliography.value();
+            }
+        }
+
+        if (options_.use_cout)
+        {
+            std::cout << std::setw(4) << output << std::endl;
+        }
+
+        path_.replace_extension(".json");
+        std::ofstream ofs{path_};
+        ofs << std::setw(4) << output << std::endl;
+    }
+    catch (const std::runtime_error& e_)
+    {
+        std::cerr << "Failed to parse " << path_ << "\n";
+        std::cerr << "Error: " << e_.what() << std::endl;
+    }
 }
