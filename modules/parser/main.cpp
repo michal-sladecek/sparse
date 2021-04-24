@@ -72,6 +72,7 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
 }
 
+
 options_t parse_program_options(int argc_, char* argv_[])
 {
     options_t o{};
@@ -127,7 +128,6 @@ options_t parse_program_options(int argc_, char* argv_[])
             exit(EXIT_FAILURE);
         }
     }
-
     return o;
 }
 
