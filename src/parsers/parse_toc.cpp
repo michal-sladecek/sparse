@@ -6,33 +6,16 @@
 #include <sparse/common/types.hpp>
 #include <sparse/parsers/parsers.hpp>
 #include <string>
-
-
-
-/*
- * Files with low points:
- *  - 0782V5b_pdf.txt
- *      - this file's expected json contains also subsections, which are not in the table of content
- *  - 0879V4a_pdf.json
- *      - this file contains also letters in section numbers
- *      - also, the section numbers are not ended with '.' in the expected json
- *  - 0939V3b_pdf.json
- *      - toc is made from two columns
- *  -
- *
- *
- */
-
-
-
+#include <algorithm>
 
 
 
 
 
 namespace {
-const std::regex toc_beginning(".*contents.*", std::regex_constants::icase);
-const std::regex toc_split(R"(^\s*([0-9\.]+)\s*(.+[^\.\s])[\.\s]+([0-9]+)\s*$)");
+const std::regex toc_beginning(R"(.*(content|INDEX).*)", std::regex_constants::icase);
+const std::regex toc_split(R"(^\s*([0-9A-Z\.]+)\s+(.+[^\.\s])[\.\s]+([0-9]+)\s*$)");
+const std::regex toc_double_split(R"(^\s*([0-9A-Z\.]+)\s+(.+[^\.\s])[\.\s]+([0-9]+)\s+([0-9A-Z\.]+)\s+(.+[^\.\s])[\.\s]+([0-9]+)\s*$)");
 
 
 std::vector<std::size_t> find_possible_toc_beginnings(const std::string& s) noexcept
@@ -46,7 +29,17 @@ std::vector<std::size_t> find_possible_toc_beginnings(const std::string& s) noex
     return possible_toc_beginnings;
 }
 
-sparse::common::table_of_contents_t get_toc_beginning_at(const std::string& s, std::size_t beg) noexcept
+
+
+bool toc_sort(sparse::common::section_t const& lhs, sparse::common::section_t const& rhs) {
+    if(lhs.page_number != rhs.page_number)
+    {
+        return lhs.page_number < rhs.page_number;
+    }
+    return lhs.id < rhs.id;
+}
+
+sparse::common::table_of_contents_t get_toc(const std::string& s, std::size_t beg) noexcept
 {
     constexpr int max_length_of_toc = 10;
 
@@ -54,29 +47,63 @@ sparse::common::table_of_contents_t get_toc_beginning_at(const std::string& s, s
     std::size_t previous_position = beg;
     sparse::common::table_of_contents_t table_of_contents;
 
+
+
     for (auto lines_since_last_toc_entry = 0; lines_since_last_toc_entry < max_length_of_toc &&
-                                                       (current_position = s.find('\n', previous_position + 1)) != std::string::npos;
+                                              (current_position = s.find('\n', previous_position + 1)) != std::string::npos;
          ++lines_since_last_toc_entry)
     {
         const auto line = s.substr(previous_position, current_position - previous_position);
 
-        std::smatch split_matches;
-        std::regex_match(line, split_matches, toc_split);
+        std::smatch split_matches_double_line, split_matches_single_line;
+        std::regex_match(line, split_matches_double_line, toc_double_split);
+        std::regex_match(line, split_matches_single_line, toc_split);
+        if(split_matches_double_line.size() >= 7 && split_matches_double_line[2].length() > 3 ){
+            sparse::common::section_t section_l,section_r;
+            section_l.id = split_matches_double_line[1];
+            if(section_l.id.ends_with('.')){
+                section_l.id.pop_back();
+            }
+            section_l.name = split_matches_double_line[2];
+            section_l.page_number = stoi(split_matches_double_line[3]);
+            table_of_contents.push_back(section_l);
 
-        if(split_matches.size() >= 1){
+            section_r.id = split_matches_double_line[4];
+            if(section_r.id.ends_with('.')){
+                section_r.id.pop_back();
+            }
+            section_r.name = split_matches_double_line[5];
+            section_r.page_number = stoi(split_matches_double_line[6]);
+            table_of_contents.push_back(section_r);
+            lines_since_last_toc_entry = 0;
+        }
+
+        else if(split_matches_single_line.size() >= 4 && split_matches_single_line[2].length() > 3 ){
             sparse::common::section_t section;
-            section.id = split_matches[1];
-            section.name = split_matches[2];
-            section.page_number = stoi(split_matches[3]);
+            section.id = split_matches_single_line[1];
+            if(section.id.ends_with('.')){
+                section.id.pop_back();
+            }
+            section.name = split_matches_single_line[2];
+            section.page_number = stoi(split_matches_single_line[3]);
             table_of_contents.push_back(section);
             lines_since_last_toc_entry = 0;
         }
+
         previous_position = current_position;
     }
+
+    std::sort(table_of_contents.begin(),table_of_contents.end(),&toc_sort);
+
     return table_of_contents;
 }
 
+
+
 }
+
+
+
 
 namespace sparse::parsers
 {
@@ -93,7 +120,7 @@ std::optional<common::table_of_contents_t> parse_toc(const std::string& whole_fi
          * In the case there is more of them, we try to parse each one
          * And take the one that contains most entries, as it is the one that is most likely to not be a false positive
          */
-        const auto possible_toc = get_toc_beginning_at(whole_file, i);
+        const auto possible_toc = get_toc(whole_file, i);
         if (possible_toc.size() > biggest_toc.size())
         {
             biggest_toc = possible_toc;
