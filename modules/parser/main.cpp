@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <sparse/common/types.hpp>
@@ -26,12 +27,80 @@ void print_help_message()
     std::cout << "\nSupported program arguments:\n";
 }
 
+options_t parse_program_options(int argc_, char* argv_[]);
+
+void parse_file(fs::path path_, const options_t& options_)
+{
+    try
+    {
+        const auto whole_file = sparse::common::load_file_into_string(path_);
+        nlohmann::json output;
+        std::cout << "Parsing " << path_ << std::endl;
+        if (options_.parse_title)
+        {
+            if (const auto title = sparse::parsers::parse_title(whole_file))
+            {
+                output["title"] = *title;
+            }
+        }
+        if (options_.parse_versions)
+        {
+            const auto versions = sparse::parsers::parse_versions(whole_file);
+            output["versions"]  = versions;
+        }
+        // TODO: add TOC
+        // TODO: add Revisions
+        if (options_.parse_bib)
+        {
+            if (const auto bibliography = sparse::parsers::parse_bibliography(whole_file))
+            {
+                output["bibliography"] = bibliography.value();
+            }
+        }
+
+        if (options_.use_cout)
+        {
+            std::cout << std::setw(4) << output << std::endl;
+        }
+
+        path_.replace_extension(".json");
+        std::ofstream ofs{path_};
+        ofs << std::setw(4) << output << std::endl;
+    }
+    catch (const std::runtime_error& e_)
+    {
+        std::cerr << "Failed to parse " << path_ << "\n";
+        std::cerr << "Error: " << e_.what() << std::endl;
+    }
+}
+
+int main(int argc, char* argv[])
+{
+    const auto options = parse_program_options(argc, argv);
+    for (const fs::path& item : options.items_to_parse)
+    {
+        if (fs::is_regular_file(item))
+        {
+            parse_file(item, options);
+            continue;
+        }
+        for (const auto& p : fs::directory_iterator(item))
+        {
+            if (p.path().extension() == ".txt")
+            {
+                parse_file(p, options);
+            }
+        }
+    }
+    return EXIT_SUCCESS;
+}
+
 options_t parse_program_options(int argc_, char* argv_[])
 {
     options_t o{};
     bool some_set{};
     bool print_help{};
-    const auto arg_map = [&]() {
+    const auto arg_map = [&o, &some_set, &print_help]() {
         std::map<std::string_view, std::pair<std::function<void()>, std::string_view>> m;
         // clang-format off
         m.insert({"--title",        {[&]() { some_set = o.parse_title = true; },     "Parse document Title."}});
@@ -84,29 +153,4 @@ options_t parse_program_options(int argc_, char* argv_[])
     }
 
     return o;
-}
-
-
-int main(int argc, char* argv[])
-{
-    const auto options    = parse_program_options(argc, argv);
-    const auto whole_file = sparse::common::load_file_into_string(argv[1]);
-
-    nlohmann::json output;
-    const auto versions     = sparse::parsers::parse_versions(whole_file);
-    const auto bibliography = sparse::parsers::parse_bibliography(whole_file);
-
-    if (const auto title = sparse::parsers::parse_title(whole_file))
-    {
-        output["title"] = *title;
-    }
-
-    output["versions"] = versions;
-    if (bibliography.has_value())
-    {
-        output["bibliography"] = bibliography.value();
-    }
-
-    std::cout << std::setw(4) << output << std::endl;
-    return EXIT_SUCCESS;
 }
