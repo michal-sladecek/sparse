@@ -1,6 +1,4 @@
-#ifndef TOKENS_HPP
-#define TOKENS_HPP
-
+#pragma once
 #include <ctre.hpp>
 #include <optional>
 #include <string_view>
@@ -69,30 +67,85 @@ struct token
     std::string_view matched; ///< Mached substring
 };
 
+
+namespace tokens
+{
 struct header : public token<header>
 {
     static constexpr ctll::fixed_string re = "^(.|\\n|\\n\\r)*(Revision History|Version Control)";
 };
 
-struct version_description : public token<version_description>
+struct version_description_header : public token<version_description_header>
 {
     static constexpr ctll::fixed_string re = "^(.|\\n|\\n\\r)*Version(\\h*)+Description of change";
 };
 
-struct revision_date_description : public token<revision_date_description>
+struct revision_date_description_header : public token<revision_date_description_header>
 {
     static constexpr ctll::fixed_string re = "^(.|\\n|\\n\\r)*(Rev|Revision|Version)(\\h*)+(Date|Release Date)(\\h*)+(Description number|Description)(\\h*)+";
 };
 
-struct date_version_change : public token<date_version_change>
+struct date_version_change_header : public token<date_version_change_header>
 {
     static constexpr ctll::fixed_string re = "^(.|\\n|\\n\\r)*Date(\\h*)+Version(\\h*)+Change notice(\\h*)+";
 };
 
-struct version_date_author_changes : public token<version_date_author_changes>
+struct version_date_author_changes_header : public token<version_date_author_changes_header>
 {
     static constexpr ctll::fixed_string re = "^(.|\n|\n\r)*Version(\\h*)+Date(\\h*)+Author(\\h*)+Changes to Previous version";
 };
 
+struct version : public token<version>
+{
+    static constexpr ctll::fixed_string re = "(v|Rev\\. |Version )?\\d.\\d";
+};
+
+struct date : public token<date>
+{
+    static constexpr ctll::fixed_string re = "(\\d{4}-\\d{1,2}-\\d{1,2}|\\d{1,2}.\\d{1,2}.\\d{4}|\\d{1,2}[ "
+                                             "-](January|February|March|April|May|June|July|August|September|October|November|December)[ -]\\d{4})";
+};
+
+struct author : public token<author>
+{
+    static constexpr ctll::fixed_string re = "[a-zA-Z]+ [a-zA-Z]+ ([a- dzA-Z]+)?";
+};
+
+struct description : public token<description>
+{
+    static constexpr ctll::fixed_string re = ".*(\\r\\n|\\n)";
+};
+
+// Unfortunately it is not possible to concatenate ctll::fixed_string
+struct version_description : public token<version_description>
+{
+    static constexpr ctll::fixed_string re = "(v|Rev\\. |Version )?\\d.\\d[\\h]"
+                                             "*.*(\\r\\n|\\n)";
+};
+
+struct revision_date_description : public token<revision_date_description>
+{
+    static constexpr ctll::fixed_string re = "(v|Rev\\. |Version )?\\d.\\d[\\h]*"
+                                             "(\\d{4}-\\d{1,2}-\\d{1,2}|\\d{1,2}.\\d{1,2}.\\d{4}|\\d{1,2}[-](January|February|March|April|May|"
+                                             "June|July|August|September|October|November|December)[ -]\\d{4})[\\h]"
+                                             "*.*(\\r\\n|\\n)";
+};
+
+struct date_version_change : public token<date_version_change>
+{
+    static constexpr ctll::fixed_string re = "(\\d{4}-\\d{1,2}-\\d{1,2}|\\d{1,2}.\\d{1,2}.\\d{4}|\\d{1,2}[ "
+                                             "-](January|February|March|April|May|June|July|August|September|October|November|December)[ -]\\d{4})"
+                                             "(v|Rev\\. |Version )?\\d.\\d"
+                                             ".*(\\r\\n|\\n)";
+};
+
+struct version_date_author_changes : public token<version_date_author_changes>
+{
+    static constexpr ctll::fixed_string re = "(\\d{4}-\\d{1,2}-\\d{1,2}|\\d{1,2}.\\d{1,2}.\\d{4}|\\d{1,2}[ "
+                                             "-](January|February|March|April|May|June|July|August|September|October|November|December)[ -]\\d{4})"
+                                             "(v|Rev\\. |Version )?\\d.\\d"
+                                             "[a-zA-Z]+ [a-zA-Z]+ ([a- dzA-Z]+)?"
+                                             ".*(\\r\\n|\\n)";
+};
+} // namespace tokens
 } // namespace sparse::parsers::revisions
-#endif // TOKENS_HPP
