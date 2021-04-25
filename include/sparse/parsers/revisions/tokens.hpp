@@ -92,7 +92,7 @@ struct date_version_change_header : public token<date_version_change_header>
 
 struct version_date_author_changes_header : public token<version_date_author_changes_header>
 {
-    static constexpr ctll::fixed_string re = "^(.|\n|\n\r)*Version(\\h*)+Date(\\h*)+Author(\\h*)+Changes to Previous version";
+    static constexpr ctll::fixed_string re = "^(.|\\n|\\n\\r)*Version(\\h*)+Date(\\h*)+Author(\\h*)+Changes to Previous version";
 };
 
 struct version : public token<version>
@@ -102,13 +102,14 @@ struct version : public token<version>
 
 struct date : public token<date>
 {
-    static constexpr ctll::fixed_string re = "(\\d{4}-\\d{1,2}-\\d{1,2}|\\d{1,2}.\\d{1,2}.\\d{4}|\\d{1,2}[ "
-                                             "-](January|February|March|April|May|June|July|August|September|October|November|December)[ -]\\d{4})";
+    static constexpr ctll::fixed_string re = "(\\d{4}\\-\\d{1,2}\\-\\d{1,2}|\\d{1,2}.\\d{1,2}.\\d{4}|\\d{1,2})[ \\-]"
+                                             "(January|February|March|April|May|June|July|August|September|October|November|December)"
+                                             "[ \\-]\\d{4}";
 };
 
 struct author : public token<author>
 {
-    static constexpr ctll::fixed_string re = "[a-zA-Z]+ [a-zA-Z]+ ([a- dzA-Z]+)?";
+    static constexpr ctll::fixed_string re = "[a-zA-Z]+ [a-zA-Z]+ ([a-zA-Z]+)?";
 };
 
 struct description : public token<description>
@@ -119,33 +120,37 @@ struct description : public token<description>
 // Unfortunately it is not possible to concatenate ctll::fixed_string
 struct version_description : public token<version_description>
 {
-    static constexpr ctll::fixed_string re = "(v|Rev\\. |Version )?\\d.\\d[\\h]"
-                                             "*.*(\\r\\n|\\n)";
+    static constexpr ctll::fixed_string re = "(v|Rev\\. |Version )?\\d.\\d[\\h]+"
+                                             ".*(\\r\\n|\\n)";
 };
 
 struct revision_date_description : public token<revision_date_description>
 {
-    static constexpr ctll::fixed_string re = "(v|Rev\\. |Version )?\\d.\\d[\\h]*"
-                                             "(\\d{4}-\\d{1,2}-\\d{1,2}|\\d{1,2}.\\d{1,2}.\\d{4}|\\d{1,2}[-](January|February|March|April|May|"
-                                             "June|July|August|September|October|November|December)[ -]\\d{4})[\\h]"
-                                             "*.*(\\r\\n|\\n)";
+    static constexpr ctll::fixed_string re = "(v|Rev\\. |Version )?\\d.\\d[\\h]+"
+                                             "(\\d{4}\\-\\d{1,2}\\-\\d{1,2}|\\d{1,2}.\\d{1,2}.\\d{4}|\\d{1,2})[ \\-]"
+                                             "(January|February|March|April|May|June|July|August|September|October|November|December)"
+                                             "[ \\-]\\d{4}[\\h]+"
+                                             ".*(\\r\\n|\\n)";
 };
 
 struct date_version_change : public token<date_version_change>
 {
-    static constexpr ctll::fixed_string re = "(\\d{4}-\\d{1,2}-\\d{1,2}|\\d{1,2}.\\d{1,2}.\\d{4}|\\d{1,2}[ "
-                                             "-](January|February|March|April|May|June|July|August|September|October|November|December)[ -]\\d{4})"
-                                             "(v|Rev\\. |Version )?\\d.\\d"
+    static constexpr ctll::fixed_string re = "(\\d{4}\\-\\d{1,2}\\-\\d{1,2}|\\d{1,2}.\\d{1,2}.\\d{4}|\\d{1,2})[ \\-]"
+                                             "(January|February|March|April|May|June|July|August|September|October|November|December)"
+                                             "[ \\-]\\d{4}[\\h]+"
+                                             "(v|Rev\\. |Version )?\\d.\\d[\\h]+"
                                              ".*(\\r\\n|\\n)";
 };
 
 struct version_date_author_changes : public token<version_date_author_changes>
 {
-    static constexpr ctll::fixed_string re = "(\\d{4}-\\d{1,2}-\\d{1,2}|\\d{1,2}.\\d{1,2}.\\d{4}|\\d{1,2}[ "
-                                             "-](January|February|March|April|May|June|July|August|September|October|November|December)[ -]\\d{4})"
-                                             "(v|Rev\\. |Version )?\\d.\\d"
-                                             "[a-zA-Z]+ [a-zA-Z]+ ([a- dzA-Z]+)?"
+    static constexpr ctll::fixed_string re = "(v|Rev\\. |Version )?\\d.\\d[\\h]+"
+                                             "(\\d{4}\\-\\d{1,2}\\-\\d{1,2}|\\d{1,2}.\\d{1,2}.\\d{4}|\\d{1,2})[ \\-]"
+                                             "(January|February|March|April|May|June|July|August|September|October|November|December)"
+                                             "[ \\-]\\d{4}[\\h]+"
+                                             "[a-zA-Z]+ [a-zA-Z]+ ([a-zA-Z]+)?[\\h]+"
                                              ".*(\\r\\n|\\n)";
 };
+
 } // namespace tokens
 } // namespace sparse::parsers::revisions
