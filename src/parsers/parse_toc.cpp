@@ -7,13 +7,32 @@
 #include <sparse/common/types.hpp>
 #include <sparse/parsers/parsers.hpp>
 #include <string>
-
+#include <iostream>
 
 namespace
 {
 const std::regex toc_beginning(R"(.*(content|INDEX).*)", std::regex_constants::icase);
 const std::regex toc_split(R"(^\s*([0-9A-Z\.]+)\s+(.+[^\.\s])[\.\s]+([0-9]+)\s*$)");
 const std::regex toc_double_split(R"(^\s*([0-9A-Z\.]+)\s+(.+[^\.\s])[\.\s]+([0-9]+)\s+([0-9A-Z\.]+)\s+(.+[^\.\s])[\.\s]+([0-9]+)\s*$)");
+
+
+
+
+
+int stoi_fallback(const std::string & s)
+{
+    // The default value is zero
+    int retval = 0;
+    try{
+        retval = std::stoi(s);
+    }
+    catch(std::invalid_argument invalidArgument){
+    }
+    catch(std::out_of_range outOfRange){
+    }
+
+    return retval;
+}
 
 
 std::vector<std::size_t> find_possible_toc_beginnings(const std::string& s) noexcept
@@ -40,6 +59,9 @@ bool toc_sort(sparse::common::section_t const& lhs, sparse::common::section_t co
 sparse::common::table_of_contents_t get_toc(const std::string& s, std::size_t beg) noexcept
 {
     constexpr int max_length_of_toc = 10;
+    constexpr int num_double_line_match = 7;
+    constexpr int num_single_line_match = 4;
+    constexpr int minimal_section_name_length = 3;
 
     std::size_t current_position;
     std::size_t previous_position = beg;
@@ -55,7 +77,9 @@ sparse::common::table_of_contents_t get_toc(const std::string& s, std::size_t be
         std::smatch split_matches_double_line, split_matches_single_line;
         std::regex_match(line, split_matches_double_line, toc_double_split);
         std::regex_match(line, split_matches_single_line, toc_split);
-        if (split_matches_double_line.size() >= 7 && split_matches_double_line[2].length() > 3)
+
+
+        if (split_matches_double_line.size() >= num_double_line_match && split_matches_double_line[2].length() > minimal_section_name_length)
         {
             sparse::common::section_t section_l, section_r;
             section_l.id = split_matches_double_line[1];
@@ -64,7 +88,7 @@ sparse::common::table_of_contents_t get_toc(const std::string& s, std::size_t be
                 section_l.id.pop_back();
             }
             section_l.name        = split_matches_double_line[2];
-            section_l.page_number = stoi(split_matches_double_line[3]);
+            section_l.page_number = stoi_fallback(split_matches_double_line[3]);
             table_of_contents.push_back(section_l);
 
             section_r.id = split_matches_double_line[4];
@@ -73,12 +97,12 @@ sparse::common::table_of_contents_t get_toc(const std::string& s, std::size_t be
                 section_r.id.pop_back();
             }
             section_r.name        = split_matches_double_line[5];
-            section_r.page_number = stoi(split_matches_double_line[6]);
+            section_r.page_number = stoi_fallback(split_matches_double_line[6]);
             table_of_contents.push_back(section_r);
             lines_since_last_toc_entry = 0;
         }
 
-        else if (split_matches_single_line.size() >= 4 && split_matches_single_line[2].length() > 3)
+        else if (split_matches_single_line.size() >= num_single_line_match && split_matches_single_line[2].length() > minimal_section_name_length)
         {
             sparse::common::section_t section;
             section.id = split_matches_single_line[1];
@@ -87,7 +111,7 @@ sparse::common::table_of_contents_t get_toc(const std::string& s, std::size_t be
                 section.id.pop_back();
             }
             section.name        = split_matches_single_line[2];
-            section.page_number = stoi(split_matches_single_line[3]);
+            section.page_number = stoi_fallback(split_matches_single_line[3]);
             table_of_contents.push_back(section);
             lines_since_last_toc_entry = 0;
         }
@@ -110,7 +134,7 @@ std::optional<common::table_of_contents_t> parse_toc(const std::string& whole_fi
 {
     const auto possible_toc = find_possible_toc_beginnings(whole_file);
 
-    common::table_of_contents_t biggest_toc;
+    std::optional<common::table_of_contents_t> biggest_toc;
 
 
     for (const auto i : possible_toc)
@@ -121,15 +145,13 @@ std::optional<common::table_of_contents_t> parse_toc(const std::string& whole_fi
          * And take the one that contains most entries, as it is the one that is most likely to not be a false positive
          */
         const auto possible_toc = get_toc(whole_file, i);
-        if (possible_toc.size() > biggest_toc.size())
+        if(!biggest_toc.has_value()){
+            biggest_toc = possible_toc;
+        }
+        if (biggest_toc.has_value() && possible_toc.size() > biggest_toc.value().size())
         {
             biggest_toc = possible_toc;
         }
-    }
-
-    if (biggest_toc.empty())
-    {
-        return {};
     }
 
     return biggest_toc;
