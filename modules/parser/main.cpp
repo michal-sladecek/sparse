@@ -80,14 +80,14 @@ options_t parse_program_options(int argc_, char* argv_[])
     const auto arg_map = [&o, &some_set, &print_help]() {
         std::map<std::string_view, std::pair<std::function<void()>, std::string_view>> m;
         // clang-format off
+        m.insert({"--bibliography", {[&]() { some_set = o.parse_bib = true; },       "Parse Bibliography."}});
+        m.insert({"--help",         {[&]() { print_help = true; },                   "Show program options and exit."}});
+        m.insert({"-h",             {[&]() { print_help = true; },                   ""}});
+        m.insert({"--out",          {[&]() { o.use_cout = true; },                   "Print result json to standard output."}});
+        m.insert({"--revisions",    {[&]() { some_set = o.parse_revisions = true; }, "Parse Revisions."}});
         m.insert({"--title",        {[&]() { some_set = o.parse_title = true; },     "Parse document Title."}});
         m.insert({"--toc",          {[&]() { some_set = o.parse_toc = true; },       "Parse Table of Content."}});
         m.insert({"--versions",     {[&]() { some_set = o.parse_versions = true; },  "Parse Versions."}});
-        m.insert({"--revisions",    {[&]() { some_set = o.parse_revisions = true; }, "Parse Revisions."}});
-        m.insert({"--bibliography", {[&]() { some_set = o.parse_bib = true; },       "Parse Bibliography."}});
-        m.insert({"--out",          {[&]() { o.use_cout = true; },                   "Print result json to standard output."}});
-        m.insert({"--help",         {[&]() { print_help = true; },                   "Show program options and exit."}});
-        m.insert({"-h",             {[&]() { print_help = true; },                   ""}});
         // clang-format on
         return m;
     }();
