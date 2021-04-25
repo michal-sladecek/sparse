@@ -7,7 +7,6 @@
 #include <sparse/common/types.hpp>
 #include <sparse/parsers/parsers.hpp>
 #include <string>
-#include <iostream>
 
 namespace
 {
@@ -16,20 +15,18 @@ const std::regex toc_split(R"(^\s*([0-9A-Z\.]+)\s+(.+[^\.\s])[\.\s]+([0-9]+)\s*$
 const std::regex toc_double_split(R"(^\s*([0-9A-Z\.]+)\s+(.+[^\.\s])[\.\s]+([0-9]+)\s+([0-9A-Z\.]+)\s+(.+[^\.\s])[\.\s]+([0-9]+)\s*$)");
 
 
-
-
-
-int stoi_fallback(const std::string & s)
+int stoi_fallback(const std::string& s)
 {
     // The default value is zero
     int retval = 0;
-    try{
+    try
+    {
         retval = std::stoi(s);
     }
-    catch(std::invalid_argument invalidArgument){
-    }
-    catch(std::out_of_range outOfRange){
-    }
+    catch (std::invalid_argument invalidArgument)
+    {}
+    catch (std::out_of_range outOfRange)
+    {}
 
     return retval;
 }
@@ -58,9 +55,9 @@ bool toc_sort(sparse::common::section_t const& lhs, sparse::common::section_t co
 
 sparse::common::table_of_contents_t get_toc(const std::string& s, std::size_t beg) noexcept
 {
-    constexpr int max_length_of_toc = 10;
-    constexpr int num_double_line_match = 7;
-    constexpr int num_single_line_match = 4;
+    constexpr int max_length_of_toc           = 10;
+    constexpr int num_double_line_match       = 7;
+    constexpr int num_single_line_match       = 4;
     constexpr int minimal_section_name_length = 3;
 
     std::size_t current_position;
@@ -145,7 +142,8 @@ std::optional<common::table_of_contents_t> parse_toc(const std::string& whole_fi
          * And take the one that contains most entries, as it is the one that is most likely to not be a false positive
          */
         const auto possible_toc = get_toc(whole_file, i);
-        if(!biggest_toc.has_value()){
+        if (!biggest_toc.has_value())
+        {
             biggest_toc = possible_toc;
         }
         if (biggest_toc.has_value() && possible_toc.size() > biggest_toc.value().size())
