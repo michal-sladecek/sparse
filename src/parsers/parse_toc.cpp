@@ -46,11 +46,7 @@ std::vector<std::size_t> find_possible_toc_beginnings(const std::string& s) noex
 
 bool toc_sort(sparse::common::section_t const& lhs, sparse::common::section_t const& rhs)
 {
-    if (lhs.page_number != rhs.page_number)
-    {
-        return lhs.page_number < rhs.page_number;
-    }
-    return lhs.id < rhs.id;
+    return std::tie(lhs.page_number,lhs.id) < std::tie(rhs.page_number,rhs.id);
 }
 
 sparse::common::table_of_contents_t get_toc(const std::string& s, std::size_t beg) noexcept
@@ -116,8 +112,11 @@ sparse::common::table_of_contents_t get_toc(const std::string& s, std::size_t be
         previous_position = current_position;
     }
 
-    std::sort(table_of_contents.begin(), table_of_contents.end(), &toc_sort);
-
+    std::sort(table_of_contents.begin(), table_of_contents.end(),
+              [](const sparse::common::section_t & lhs, const sparse::common::section_t & rhs) -> bool
+              {
+    return std::tie(lhs.page_number,lhs.id) < std::tie(rhs.page_number,rhs.id);
+              });
     return table_of_contents;
 }
 
@@ -141,14 +140,14 @@ std::optional<common::table_of_contents_t> parse_toc(const std::string& whole_fi
          * In the case there is more of them, we try to parse each one
          * And take the one that contains most entries, as it is the one that is most likely to not be a false positive
          */
-        const auto possible_toc = get_toc(whole_file, i);
+        const auto current_toc = get_toc(whole_file, i);
         if (!biggest_toc.has_value())
         {
-            biggest_toc = possible_toc;
+            biggest_toc = current_toc;
         }
-        if (biggest_toc.has_value() && possible_toc.size() > biggest_toc.value().size())
+        if (biggest_toc.has_value() && current_toc.size() > biggest_toc.value().size())
         {
-            biggest_toc = possible_toc;
+            biggest_toc = current_toc;
         }
     }
 
