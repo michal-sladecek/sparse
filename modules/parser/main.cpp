@@ -137,7 +137,7 @@ void parse_file(fs::path path_, const options_t& options_)
     {
         const auto whole_file = sparse::common::load_file_into_string(path_);
         nlohmann::json output;
-        std::cerr << "Parsing " << path_ << std::endl;
+        std::cout << "Parsing " << path_ << std::endl;
         if (options_.parse_title)
         {
             if (const auto title = sparse::parsers::parse_title(whole_file))
