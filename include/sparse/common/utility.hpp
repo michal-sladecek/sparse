@@ -25,4 +25,10 @@ std::string_view trim_line(std::string_view sw_);
  */
 void to_json(nlohmann::json& j, const versions_t& versions);
 
+/**
+ * @brief to_json
+ * @param j json
+ * @param section section_t object
+ */
+void to_json(nlohmann::json& j, const section_t& section);
 } // namespace sparse::common
