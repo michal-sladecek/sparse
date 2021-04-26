@@ -138,7 +138,10 @@ void parse_file(fs::path path_, const options_t& options_)
     {
         const auto whole_file = sparse::common::load_file_into_string(path_);
         nlohmann::json output;
-        std::cout << "Parsing " << path_ << std::endl;
+        if (!options_.use_cout)
+        {
+            std::cout << "Parsing " << path_ << std::endl;
+        }
         if (options_.parse_title)
         {
             if (const auto title = sparse::parsers::parse_title(whole_file))
@@ -165,10 +168,12 @@ void parse_file(fs::path path_, const options_t& options_)
         {
             std::cout << std::setw(4) << output << std::endl;
         }
-
-        path_.replace_extension(".json");
-        std::ofstream ofs{path_};
-        ofs << std::setw(4) << output << std::endl;
+        else
+        {
+            path_.replace_extension(".json");
+            std::ofstream ofs{path_};
+            ofs << std::setw(4) << output << std::endl;
+        }
     }
     catch (const std::runtime_error& e_)
     {
