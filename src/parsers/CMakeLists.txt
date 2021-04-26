@@ -14,8 +14,6 @@ set(headers
     ${include_path}/parsers.hpp
     ${include_path}/tokens.hpp
     ${include_path}/state_machine.hpp
-    ${include_path}/revisions/state_machine.hpp
-    ${include_path}/revisions/tokens.hpp
 )
 
 add_library(${target} OBJECT ${sources} ${headers})
