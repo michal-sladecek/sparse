@@ -28,6 +28,6 @@ std::optional<common::title_t> parse_title(std::string_view file);
  */
 common::versions_t parse_versions(const std::string& certificate) noexcept;
 
-common::revision_t parse_revisions(std::string_view file) noexcept;
+std::optional<common::revisions_t> parse_revisions(const std::string& file) noexcept;
 
 } // namespace sparse::parsers

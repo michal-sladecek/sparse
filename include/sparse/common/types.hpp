@@ -49,6 +49,7 @@ struct revision_t
 {
     std::string version;     ///< version
     std::string date;        ///< date
+    std::string author;      ///< author
     std::string description; ///< description
 };
 
