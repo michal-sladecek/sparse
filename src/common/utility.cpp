@@ -72,4 +72,13 @@ void to_json(nlohmann::json& j, const revision_t& revision)
         j["author"] = revision.author;
 }
 
+void to_json(nlohmann::json& j, const section_t& section)
+{
+    nlohmann::json array = nlohmann::json::array();
+    array.push_back(section.id);
+    array.push_back(section.name);
+    array.push_back(section.page_number);
+    j = array;
+}
+
 } // namespace sparse::common

@@ -37,6 +37,12 @@ void to_json(nlohmann::json& j, const versions_t& versions);
  * @param j json
  * @param revision revision object
  */
-void to_json(nlohmann::json& j, const revision_t revision);
+void to_json(nlohmann::json& j, const revision_t& revision);
 
+/**
+ * @brief to_json
+ * @param j json
+ * @param section section object
+ */
+void to_json(nlohmann::json& j, const section_t& section);
 } // namespace sparse::common

@@ -43,6 +43,7 @@ struct section_t
  */
 using table_of_contents_t = std::vector<section_t>;
 
+
 /**
  * @brief Parsed revision of the certificate.
  */

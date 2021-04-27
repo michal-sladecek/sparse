@@ -27,7 +27,7 @@ static const std::string author      = "[a-zA-Z]+ [a-zA-Z]+ ([a-zA-Z]+)?";
 static const std::string description = ".*(\\r\\n|\\n)";
 } // namespace tokens
 
-std::string repetitions_of(const std::string s)
+std::string repetitions_of(const std::string& s)
 {
     return "\n{0,2}(" + s + ")+\n{1,2}";
 }
@@ -246,7 +246,7 @@ common::revision_t parse_version_date_author_description(std::string f, std::str
     return revision;
 }
 
-std::optional<common::revision_t> parse_r(const std::string f, const std::string& s, detail::revision_type::type t)
+std::optional<common::revision_t> parse_r(const std::string& f, const std::string& s, detail::revision_type::type t)
 {
     using namespace detail;
     switch (t)

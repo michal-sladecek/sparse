@@ -30,4 +30,5 @@ common::versions_t parse_versions(const std::string& certificate) noexcept;
 
 common::revisions_t parse_revisions(const std::string& file) noexcept;
 
+std::optional<common::table_of_contents_t> parse_toc(const std::string& whole_file) noexcept;
 } // namespace sparse::parsers

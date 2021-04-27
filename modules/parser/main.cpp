@@ -72,6 +72,7 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
 }
 
+
 options_t parse_program_options(int argc_, char* argv_[])
 {
     options_t o{};
@@ -128,7 +129,6 @@ options_t parse_program_options(int argc_, char* argv_[])
             exit(EXIT_FAILURE);
         }
     }
-
     return o;
 }
 
@@ -151,13 +151,24 @@ void parse_file(fs::path path_, const options_t& options_)
             const auto versions = sparse::parsers::parse_versions(whole_file);
             output["versions"]  = versions;
         }
-        // TODO: add TOC
+
+        if (options_.parse_toc)
+        {
+            const auto toc = sparse::parsers::parse_toc(whole_file);
+            if (toc.has_value())
+            {
+                output["table_of_contents"] = toc.value();
+            }
+        }
 
         if (options_.parse_revisions)
         {
             const auto revisions = sparse::parsers::parse_revisions(whole_file);
-            output["revisions"]  = revisions;
+            sparse::common::revision_t r;
+            output["revisions"] = revisions;
         }
+
+
         if (options_.parse_bib)
         {
             if (const auto bibliography = sparse::parsers::parse_bibliography(whole_file))
@@ -165,6 +176,7 @@ void parse_file(fs::path path_, const options_t& options_)
                 output["bibliography"] = bibliography.value();
             }
         }
+
 
         if (options_.use_cout)
         {
