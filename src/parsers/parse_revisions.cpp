@@ -8,22 +8,16 @@ namespace sparse::parsers
 {
 namespace detail
 {
-std::string repetitions_of(const std::string s)
-{
-    return "\n{0,2}(" + s + ")+\n{1,2}";
-}
-
-
 namespace tokens
 {
 static const std::string start     = "( |\\t)*";
 static const std::string delimeter = "( |\\t)+";
 static const std::string months    = "(January|February|March|April|May|June|July|August|September|October|November|December)";
 
-static const std::string header                           = "^(.|\\n|\\n\\r)*(Revision History|Version Control)";
-static const std::string version_description_header       = "^(.|\\n|\\n\\r)*Version[ \\t]+Description of change";
-static const std::string revision_date_description_header = "^(.|\\n|\\n\\r)*(Rev|Revision|Version)"
-                                                            "[ \\t]+(Date|Release Date)[ \\t]+(Description number|Description)";
+static const std::string header                          = "^(.|\\n|\\n\\r)*(Revision History|Version Control)";
+static const std::string version_description_header      = "^(.|\\n|\\n\\r)*Version[ \\t]+Description of change";
+static const std::string version_date_description_header = "^(.|\\n|\\n\\r)*(Rev|Revision|Version)"
+                                                           "[ \\t]+(Date|Release Date)[ \\t]+(Description number|Description\\nnumber|Description)";
 static const std::string date_version_description_header        = "^(.|\\n|\\n\\r)*Date[ \\t]+Version[ \\t]+Change notice";
 static const std::string version_date_author_description_header = "^(.|\\n|\\n\\r)*Version[ \\t]+Date[ \\t]+Author[ \\t]+Changes to Previous version";
 
@@ -32,6 +26,11 @@ static const std::string date        = "(\\d{4}\\-\\d{1,2}\\-\\d{1,2}|\\d{1,2}.\
 static const std::string author      = "[a-zA-Z]+ [a-zA-Z]+ ([a-zA-Z]+)?";
 static const std::string description = ".*(\\r\\n|\\n)";
 } // namespace tokens
+
+std::string repetitions_of(const std::string s)
+{
+    return "\n{0,2}(" + s + ")+\n{1,2}";
+}
 
 const static std::regex header(tokens::header);
 
@@ -46,7 +45,7 @@ const static std::regex description(tokens::start + tokens::description);
 
 
 const static std::regex version_description_header(tokens::version_description_header);
-const static std::regex revision_date_description_header(tokens::revision_date_description_header);
+const static std::regex revision_date_description_header(tokens::version_date_description_header);
 const static std::regex date_version_description_header(tokens::date_version_description_header);
 const static std::regex version_date_author_description_header(tokens::version_date_author_description_header);
 
@@ -88,21 +87,21 @@ const static std::unordered_map<std::string, std::string> date_num {
 
 
 // clang-format off
-const static std::vector<std::tuple<std::regex, revision_type::type>> header_type {
+const static std::vector<std::tuple<const std::regex&, revision_type::type>> header_type {
     {version_description_header, revision_type::version_description},
     {revision_date_description_header, revision_type::version_date_description},
     {date_version_description_header, revision_type::date_version_description},
     {version_date_author_description_header, revision_type::version_date_author_description},
 };
 
-const static std::unordered_map<revision_type::type, std::regex> type_item {
+const static std::unordered_map<revision_type::type, const std::regex&> type_item {
     {revision_type::version_description, version_description_item},
     {revision_type::version_date_description, version_date_description_item},
     {revision_type::date_version_description, date_version_description_item},
     {revision_type::version_date_author_description, version_date_author_description_item},
 };
 
-const static std::unordered_map<revision_type::type, std::regex> type_first {
+const static std::unordered_map<revision_type::type, const std::regex&> type_first {
     {revision_type::version_description, start_version},
     {revision_type::version_date_description, start_version},
     {revision_type::date_version_description, start_date},
