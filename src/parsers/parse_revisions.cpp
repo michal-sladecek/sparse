@@ -13,10 +13,12 @@ std::string repetitions_of(const std::string s)
     return "\n{0,2}(" + s + ")+\n{1,2}";
 }
 
+
 namespace tokens
 {
 static const std::string start     = "( |\\t)*";
 static const std::string delimeter = "( |\\t)+";
+static const std::string months    = "(January|February|March|April|May|June|July|August|September|October|November|December)";
 
 static const std::string header                           = "^(.|\\n|\\n\\r)*(Revision History|Version Control)";
 static const std::string version_description_header       = "^(.|\\n|\\n\\r)*Version[ \\t]+Description of change";
@@ -25,10 +27,8 @@ static const std::string revision_date_description_header = "^(.|\\n|\\n\\r)*(Re
 static const std::string date_version_description_header        = "^(.|\\n|\\n\\r)*Date[ \\t]+Version[ \\t]+Change notice";
 static const std::string version_date_author_description_header = "^(.|\\n|\\n\\r)*Version[ \\t]+Date[ \\t]+Author[ \\t]+Changes to Previous version";
 
-static const std::string version = "(v|Rev\\. |Version )?\\d\\.\\d";
-static const std::string date    = "(\\d{4}\\-\\d{1,2}\\-\\d{1,2}|\\d{1,2}.\\d{1,2}.\\d{4}|\\d{1,2}"
-                                "[ \\-](January|February|March|April|May|June|July|August|September|October|November|December)"
-                                "[ \\-]\\d{4})";
+static const std::string version     = "(v|Rev\\. |Version )?\\d\\.\\d";
+static const std::string date        = "(\\d{4}\\-\\d{1,2}\\-\\d{1,2}|\\d{1,2}.\\d{1,2}.\\d{4}|\\d{1,2}[ \\-]" + months + "[ \\-]\\d{4})";
 static const std::string author      = "[a-zA-Z]+ [a-zA-Z]+ ([a-zA-Z]+)?";
 static const std::string description = ".*(\\r\\n|\\n)";
 } // namespace tokens
@@ -109,14 +109,14 @@ std::vector<std::pair<std::string, std::string>> get_items(std::string s, detail
     {
         revisions.push_back(sm.str());
 
-        const auto split_on = sm.position();
+        const auto split_on = static_cast<std::size_t>(sm.position());
         const auto r        = s.substr(0, split_on);
         if (!r.empty())
         {
             rest.push_back(r);
         }
 
-        s = s.substr(split_on + sm.length());
+        s = s.substr(split_on + static_cast<std::size_t>(sm.length()));
     }
     rest.push_back(s);
 
