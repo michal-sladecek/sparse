@@ -23,9 +23,9 @@ int stoi_fallback(const std::string& s)
     {
         retval = std::stoi(s);
     }
-    catch (std::invalid_argument &)
+    catch (const std::invalid_argument &)
     {}
-    catch (std::out_of_range &)
+    catch (const std::out_of_range &)
     {}
 
     return retval;
