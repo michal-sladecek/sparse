@@ -307,8 +307,7 @@ common::revisions_t parse_items(const std::vector<std::pair<std::string, std::st
     common::revisions_t ret;
     for (const auto& [f, s] : items)
     {
-        const auto res = parse_r(f, s, t);
-        if (res)
+        if (const auto res = parse_r(f, s, t); res)
         {
             ret.push_back(*res);
         }
@@ -330,7 +329,7 @@ std::size_t end_of_revisions(const std::string& s)
 }
 
 
-common::revisions_t parse_revisions(const std::string& file) noexcept
+common::revisions_t parse_revisions(const std::string& file)
 {
     const auto header_end             = find_header(file);
     const std::string& without_header = file.substr(header_end, file.size());

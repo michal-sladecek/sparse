@@ -138,6 +138,7 @@ void parse_file(fs::path path_, const options_t& options_)
     {
         const auto whole_file = sparse::common::load_file_into_string(path_);
         nlohmann::json output;
+
         if (!options_.use_cout)
         {
             std::cout << "Parsing " << path_ << std::endl;
@@ -170,7 +171,6 @@ void parse_file(fs::path path_, const options_t& options_)
             output["revisions"]  = revisions;
         }
 
-
         if (options_.parse_bib)
         {
             if (const auto bibliography = sparse::parsers::parse_bibliography(whole_file))
@@ -178,7 +178,6 @@ void parse_file(fs::path path_, const options_t& options_)
                 output["bibliography"] = bibliography.value();
             }
         }
-
 
         if (options_.use_cout)
         {
