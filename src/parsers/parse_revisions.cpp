@@ -57,6 +57,9 @@ const static std::regex date_version_description_item(repetitions_of(tokens::dat
                                                                      tokens::description));
 const static std::regex version_date_author_description_item(repetitions_of(tokens::version + tokens::delimeter + tokens::date + tokens::delimeter +
                                                                             tokens::author + tokens::delimeter + tokens::description));
+
+const static std::regex months(tokens::months);
+
 namespace revision_type
 {
 using type                                        = int;
@@ -65,6 +68,23 @@ const static type version_date_description        = 1;
 const static type date_version_description        = 2;
 const static type version_date_author_description = 3;
 } // namespace revision_type
+
+// clang-format off
+const static std::unordered_map<std::string, std::string> date_num {
+    {"January", "01"},
+    {"February", "02"},
+    {"March", "03"},
+    {"April", "04"},
+    {"May", "05"},
+    {"June", "06"},
+    {"July", "07"},
+    {"August", "08"},
+    {"September", "09"},
+    {"October", "10"},
+    {"November", "11"},
+    {"December", "12"},
+};
+// clang-format on
 
 
 // clang-format off
@@ -91,6 +111,25 @@ const static std::unordered_map<revision_type::type, std::regex> type_first {
 // clang-format on
 } // namespace detail
 
+
+std::string parse_date(std::string s)
+{
+    std::smatch sm;
+    if (!std::regex_search(s, sm, detail::months))
+    {
+        return s;
+    }
+    const auto& to_replace = sm.str();
+
+    const auto it = detail::date_num.find(to_replace);
+    if (it == detail::date_num.end())
+    {
+        return s;
+    }
+
+    s.replace(s.find(to_replace), to_replace.size(), it->second);
+    return s;
+}
 
 std::vector<std::pair<std::string, std::string>> get_items(std::string s, detail::revision_type::type type)
 {
@@ -178,7 +217,7 @@ common::revision_t parse_version_date_description(std::string f, std::string s)
 {
     common::revision_t revision;
     revision.version     = match_str(f, detail::version);
-    revision.date        = match_str(s, detail::date);
+    revision.date        = parse_date(match_str(s, detail::date));
     revision.description = common::trim_line(s);
     return revision;
 }
@@ -186,8 +225,8 @@ common::revision_t parse_version_date_description(std::string f, std::string s)
 common::revision_t parse_date_version_description(std::string f, std::string s)
 {
     common::revision_t revision;
+    revision.date        = parse_date(match_str(s, detail::date));
     revision.version     = match_str(f, detail::version);
-    revision.date        = match_str(s, detail::date);
     revision.description = common::trim_line(s);
     return revision;
 }
@@ -196,7 +235,7 @@ common::revision_t parse_version_date_author_description(std::string f, std::str
 {
     common::revision_t revision;
     revision.version     = match_str(f, detail::version);
-    revision.date        = match_str(s, detail::date);
+    revision.date        = parse_date(match_str(s, detail::date));
     revision.author      = match_str(s, detail::author);
     revision.description = common::trim_line(s);
     return revision;
