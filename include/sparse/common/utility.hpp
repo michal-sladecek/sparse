@@ -19,6 +19,13 @@ std::string load_file_into_string(const std::filesystem::path& filename);
 std::string_view trim_line(std::string_view sw_);
 
 /**
+ * @brief Removes whitespace characters from both ends of a given string
+ * @param sw_ string
+ * @return trimmed string view
+ */
+std::string trim_line(std::string sw_);
+
+/**
  * @brief to_json
  * @param j json
  * @param versions versions object
@@ -28,7 +35,14 @@ void to_json(nlohmann::json& j, const versions_t& versions);
 /**
  * @brief to_json
  * @param j json
- * @param section section_t object
+ * @param revision revision object
+ */
+void to_json(nlohmann::json& j, const revision_t& revision);
+
+/**
+ * @brief to_json
+ * @param j json
+ * @param section section object
  */
 void to_json(nlohmann::json& j, const section_t& section);
 } // namespace sparse::common

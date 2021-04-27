@@ -117,7 +117,8 @@ options_t parse_program_options(int argc_, char* argv_[])
         }
         exit(EXIT_SUCCESS);
     }
-    if (!some_set){
+    if (!some_set)
+    {
         o.parse_bib = o.parse_toc = o.parse_title = o.parse_versions = o.parse_revisions = true;
     }
     for (const auto& path : o.items_to_parse)
@@ -137,6 +138,7 @@ void parse_file(fs::path path_, const options_t& options_)
     {
         const auto whole_file = sparse::common::load_file_into_string(path_);
         nlohmann::json output;
+
         if (!options_.use_cout)
         {
             std::cout << "Parsing " << path_ << std::endl;
@@ -153,14 +155,22 @@ void parse_file(fs::path path_, const options_t& options_)
             const auto versions = sparse::parsers::parse_versions(whole_file);
             output["versions"]  = versions;
         }
-        if(options_.parse_toc){
+
+        if (options_.parse_toc)
+        {
             const auto toc = sparse::parsers::parse_toc(whole_file);
             if (toc.has_value())
             {
                 output["table_of_contents"] = toc.value();
             }
         }
-        // TODO: add Revisions
+
+        if (options_.parse_revisions)
+        {
+            const auto revisions = sparse::parsers::parse_revisions(whole_file);
+            output["revisions"]  = revisions;
+        }
+
         if (options_.parse_bib)
         {
             if (const auto bibliography = sparse::parsers::parse_bibliography(whole_file))
@@ -168,8 +178,6 @@ void parse_file(fs::path path_, const options_t& options_)
                 output["bibliography"] = bibliography.value();
             }
         }
-
-
 
         if (options_.use_cout)
         {

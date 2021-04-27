@@ -7,8 +7,9 @@ set(sources
         ${source_path}/parse_bibliography.cpp
         ${source_path}/title_parser.cpp
         ${source_path}/parse_versions.cpp
+        ${source_path}/parse_revisions.cpp
         ${source_path}/parse_toc.cpp
-        )
+)
 
 set(headers
         ${include_path}/parsers.hpp

@@ -1,10 +1,10 @@
 #pragma once
 
 #include <map>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <tuple>
 #include <unordered_map>
-#include <nlohmann/json.hpp>
 #include <vector>
 
 namespace sparse::common
@@ -44,7 +44,6 @@ struct section_t
 using table_of_contents_t = std::vector<section_t>;
 
 
-
 /**
  * @brief Parsed revision of the certificate.
  */
@@ -52,6 +51,7 @@ struct revision_t
 {
     std::string version;     ///< version
     std::string date;        ///< date
+    std::string author;      ///< author
     std::string description; ///< description
 };
 
