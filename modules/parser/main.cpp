@@ -167,8 +167,7 @@ void parse_file(fs::path path_, const options_t& options_)
         if (options_.parse_revisions)
         {
             const auto revisions = sparse::parsers::parse_revisions(whole_file);
-            sparse::common::revision_t r;
-            output["revisions"] = revisions;
+            output["revisions"]  = revisions;
         }
 
 
