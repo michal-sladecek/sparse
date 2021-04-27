@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <regex>
 #include <sparse/common/utility.hpp>
@@ -29,7 +30,7 @@ static const std::string description = ".*(\\r\\n|\\n)";
 
 std::string repetitions_of(const std::string& s)
 {
-    return "\n{0,2}(" + s + ")+\n{1,2}";
+    return "\\n{0,2}(" + s + ")+\\n{1,2}";
 }
 
 const static std::regex header(tokens::header);
@@ -113,27 +114,57 @@ const static std::unordered_map<revision_type::type, const std::regex&> type_fir
 
 std::string parse_date(std::string s)
 {
+    if (s.empty())
+    {
+        return s;
+    }
+
+    const static std::regex re("\\d{4}$");
+
+    std::replace_if(
+        s.begin(), s.end(), [](char c) { return c == '.'; }, '-');
+
     std::smatch sm;
-    if (!std::regex_search(s, sm, detail::months))
+    if (std::regex_search(s, sm, detail::months))
     {
-        return s;
-    }
-    const auto& to_replace = sm.str();
+        const auto& to_replace = sm.str();
 
-    const auto it = detail::date_num.find(to_replace);
-    if (it == detail::date_num.end())
+        const auto it = detail::date_num.find(to_replace);
+        if (it == detail::date_num.end())
+        {
+            return s;
+        }
+
+        s.replace(s.find(to_replace), to_replace.size(), it->second);
+    }
+
+    if (std::regex_search(s, sm, re))
     {
-        return s;
+        const auto day   = s.substr(0, 2);
+        const auto month = s.substr(3, 2);
+        return sm.str() + "-" + month + "-" + day;
     }
-
-    s.replace(s.find(to_replace), to_replace.size(), it->second);
-    return s;
+    else
+    {
+        const auto day   = s.substr(5, 2);
+        const auto month = s.substr(8, 2);
+        const auto year  = s.substr(0, 4);
+        return year + "-" + month + "-" + day;
+    }
 }
 
 std::string remove_newlines(const std::string& s)
 {
     const static std::regex new_line("\\n");
     return std::regex_replace(s, new_line, " ");
+}
+
+std::string remove_extra_whitespaces(const std::string& input)
+{
+    std::string ret;
+    std::unique_copy(
+        input.begin(), input.end(), std::back_insert_iterator<std::string>(ret), [](char a, char b) { return std::isspace(a) && std::isspace(b); });
+    return ret;
 }
 
 std::vector<std::pair<std::string, std::string>> get_items(std::string s, detail::revision_type::type type)
@@ -209,40 +240,48 @@ std::string match_str(std::string& s, const std::regex& re)
     return common::trim_line(ret);
 }
 
+std::string get_version(std::string s)
+{
+    const static std::regex re("\\d.\\d");
+
+    std::smatch sm;
+    std::regex_search(s, sm, re);
+    return sm.str();
+}
 
 common::revision_t parse_version_description(std::string f, std::string s)
 {
     common::revision_t revision;
-    revision.version     = match_str(f, detail::version);
-    revision.description = remove_newlines(common::trim_line(s));
+    revision.version     = get_version(match_str(f, detail::version));
+    revision.description = remove_extra_whitespaces(remove_newlines(common::trim_line(s)));
     return revision;
 }
 
 common::revision_t parse_version_date_description(std::string f, std::string s)
 {
     common::revision_t revision;
-    revision.version     = match_str(f, detail::version);
+    revision.version     = get_version(match_str(f, detail::version));
     revision.date        = parse_date(match_str(s, detail::date));
-    revision.description = remove_newlines(common::trim_line(s));
+    revision.description = remove_extra_whitespaces(remove_newlines(common::trim_line(s)));
     return revision;
 }
 
 common::revision_t parse_date_version_description(std::string f, std::string s)
 {
     common::revision_t revision;
-    revision.date        = parse_date(match_str(s, detail::date));
+    revision.date        = get_version(parse_date(match_str(s, detail::date)));
     revision.version     = match_str(f, detail::version);
-    revision.description = remove_newlines(common::trim_line(s));
+    revision.description = remove_extra_whitespaces(remove_newlines(common::trim_line(s)));
     return revision;
 }
 
 common::revision_t parse_version_date_author_description(std::string f, std::string s)
 {
     common::revision_t revision;
-    revision.version     = match_str(f, detail::version);
+    revision.version     = get_version(match_str(f, detail::version));
     revision.date        = parse_date(match_str(s, detail::date));
     revision.author      = match_str(s, detail::author);
-    revision.description = remove_newlines(common::trim_line(s));
+    revision.description = remove_extra_whitespaces(remove_newlines(common::trim_line(s)));
     return revision;
 }
 
@@ -278,6 +317,19 @@ common::revisions_t parse_items(const std::vector<std::pair<std::string, std::st
     return ret;
 }
 
+std::size_t end_of_revisions(const std::string& s)
+{
+    const static std::regex re("\\n\\n");
+    std::smatch sm;
+    if (std::regex_search(s, sm, re))
+    {
+        return static_cast<std::size_t>(sm.position());
+    }
+
+    return s.length();
+}
+
+
 common::revisions_t parse_revisions(const std::string& file) noexcept
 {
     const auto header_end             = find_header(file);
@@ -291,7 +343,10 @@ common::revisions_t parse_revisions(const std::string& file) noexcept
 
     const auto& items_str = without_header.substr(tokens_from, without_header.size());
 
-    const auto items = get_items(items_str, *type);
+    const auto revisions_end = end_of_revisions(items_str);
+    const auto& revision_s   = items_str.substr(0, revisions_end);
+
+    const auto items = get_items(revision_s, *type);
     return parse_items(items, *type);
 }
 } // namespace sparse::parsers
