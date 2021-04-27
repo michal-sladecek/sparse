@@ -270,8 +270,9 @@ std::optional<common::revision_t> parse_revision(const std::string& f, const std
         return parse_date_version_description(f, s);
     case revision_type::version_date_author_description:
         return parse_version_date_author_description(f, s);
+    default:
+        return {};
     }
-    return {};
 }
 
 common::revisions_t parse_items(const std::vector<std::pair<std::string, std::string>>& items, detail::revision_type::type t)
