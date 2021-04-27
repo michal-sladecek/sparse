@@ -31,7 +31,7 @@ TEST_CASE("test2")
                     "FCS.COP.1[HW_DES] now claims compliance to NIST SP800-67\n"
                     "Rev. 4.4    29-October-2018      Update access control SFRs to reflect three access permissions enforeced by MMU\n";
     const auto res = parse_revisions(s);
-    for (const auto& r : *res)
+    for (const auto& r : res)
     {
         std::cout << ">>" << r.description << std::endl;
     }

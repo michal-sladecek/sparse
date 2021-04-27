@@ -32,4 +32,11 @@ std::string trim_line(std::string sw_);
  */
 void to_json(nlohmann::json& j, const versions_t& versions);
 
+/**
+ * @brief to_json
+ * @param j json
+ * @param revision revision object
+ */
+void to_json(nlohmann::json& j, const revision_t revision);
+
 } // namespace sparse::common

@@ -278,7 +278,7 @@ common::revisions_t parse_items(const std::vector<std::pair<std::string, std::st
     return ret;
 }
 
-std::optional<common::revisions_t> parse_revisions(const std::string& file) noexcept
+common::revisions_t parse_revisions(const std::string& file) noexcept
 {
     const auto header_end             = find_header(file);
     const std::string& without_header = file.substr(header_end, file.size());

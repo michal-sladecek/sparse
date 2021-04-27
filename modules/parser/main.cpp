@@ -152,7 +152,12 @@ void parse_file(fs::path path_, const options_t& options_)
             output["versions"]  = versions;
         }
         // TODO: add TOC
-        // TODO: add Revisions
+
+        if (options_.parse_revisions)
+        {
+            const auto revisions = sparse::parsers::parse_revisions(whole_file);
+            output["revisions"]  = revisions;
+        }
         if (options_.parse_bib)
         {
             if (const auto bibliography = sparse::parsers::parse_bibliography(whole_file))

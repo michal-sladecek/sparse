@@ -44,7 +44,6 @@ std::string trim_line(std::string sw_)
     return sw_.substr(start, sw_.size() - (end + start));
 }
 
-
 void to_json(nlohmann::json& j, const versions_t& versions)
 {
     const auto add_not_empty = [&j](const std::string& key, const std::vector<std::string>& value) {
@@ -61,6 +60,16 @@ void to_json(nlohmann::json& j, const versions_t& versions)
     add_not_empty("rsa", versions.rsa);
     add_not_empty("ecc", versions.ecc);
     add_not_empty("des", versions.des);
+}
+
+
+void to_json(nlohmann::json& j, const revision_t& revision)
+{
+    j["version"]     = revision.version;
+    j["date"]        = revision.date;
+    j["description"] = revision.description;
+    if (!revision.author.empty())
+        j["author"] = revision.author;
 }
 
 } // namespace sparse::common
