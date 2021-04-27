@@ -131,6 +131,12 @@ std::string parse_date(std::string s)
     return s;
 }
 
+std::string remove_newlines(const std::string& s)
+{
+    const static std::regex new_line("\\n");
+    return std::regex_replace(s, new_line, " ");
+}
+
 std::vector<std::pair<std::string, std::string>> get_items(std::string s, detail::revision_type::type type)
 {
     const auto it = detail::type_first.find(type);
@@ -209,7 +215,7 @@ common::revision_t parse_version_description(std::string f, std::string s)
 {
     common::revision_t revision;
     revision.version     = match_str(f, detail::version);
-    revision.description = common::trim_line(s);
+    revision.description = remove_newlines(common::trim_line(s));
     return revision;
 }
 
@@ -218,7 +224,7 @@ common::revision_t parse_version_date_description(std::string f, std::string s)
     common::revision_t revision;
     revision.version     = match_str(f, detail::version);
     revision.date        = parse_date(match_str(s, detail::date));
-    revision.description = common::trim_line(s);
+    revision.description = remove_newlines(common::trim_line(s));
     return revision;
 }
 
@@ -227,7 +233,7 @@ common::revision_t parse_date_version_description(std::string f, std::string s)
     common::revision_t revision;
     revision.date        = parse_date(match_str(s, detail::date));
     revision.version     = match_str(f, detail::version);
-    revision.description = common::trim_line(s);
+    revision.description = remove_newlines(common::trim_line(s));
     return revision;
 }
 
@@ -237,7 +243,7 @@ common::revision_t parse_version_date_author_description(std::string f, std::str
     revision.version     = match_str(f, detail::version);
     revision.date        = parse_date(match_str(s, detail::date));
     revision.author      = match_str(s, detail::author);
-    revision.description = common::trim_line(s);
+    revision.description = remove_newlines(common::trim_line(s));
     return revision;
 }
 
