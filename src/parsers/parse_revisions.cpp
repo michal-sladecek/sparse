@@ -11,9 +11,9 @@ namespace detail
 {
 namespace tokens
 {
-static const std::string start     = "( |\\t)*";
-static const std::string delimeter = "( |\\t)+";
-static const std::string months    = "(January|February|March|April|May|June|July|August|September|October|November|December)";
+static const std::string empty_start    = "( |\\t)*";
+static const std::string revision_start = "\n( ){0,3}";
+static const std::string months         = "(January|February|March|April|May|June|July|August|September|October|November|December)";
 
 static const std::string header                     = "^(.|\\n|\\n\\r)*(Revision History|Version Control)";
 static const std::string version_description_header = "^(.|\\n|\\n\\r)*Version[ \\t]+Description of change";
@@ -31,15 +31,14 @@ static const std::string description = ".*(\\r\\n|\\n)";
 
 const static std::regex header(tokens::header);
 
-const static std::regex version(tokens::start + tokens::version);
-const static std::regex start_version("\n" + tokens::version);
+const static std::regex version(tokens::empty_start + tokens::version);
+const static std::regex start_version(tokens::revision_start + tokens::version);
 
-const static std::regex date(tokens::start + tokens::date);
-const static std::regex start_date("\n" + tokens::version);
+const static std::regex date(tokens::empty_start + tokens::date);
+const static std::regex start_date(tokens::revision_start + tokens::version);
 
-const static std::regex author(tokens::start + tokens::author);
-const static std::regex description(tokens::start + tokens::description);
-
+const static std::regex author(tokens::empty_start + tokens::author);
+const static std::regex description(tokens::empty_start + tokens::description);
 
 const static std::regex version_description_header(tokens::version_description_header);
 const static std::regex revision_date_description_header(tokens::version_date_description_header);
@@ -73,7 +72,6 @@ const static std::unordered_map<std::string, std::string> date_num {
     {"December", "12"},
 };
 // clang-format on
-
 
 // clang-format off
 const static std::vector<std::tuple<const std::regex&, revision_type::type>> header_type {
@@ -119,19 +117,11 @@ std::string parse_date(std::string s)
         s.replace(s.find(to_replace), to_replace.size(), it->second);
     }
 
-    if (std::regex_search(s, sm, re))
-    {
-        const auto day   = s.substr(0, 2);
-        const auto month = s.substr(3, 2);
-        return sm.str() + "-" + month + "-" + day;
-    }
-    else
-    {
-        const auto day   = s.substr(5, 2);
-        const auto month = s.substr(8, 2);
-        const auto year  = s.substr(0, 4);
-        return year + "-" + month + "-" + day;
-    }
+    const auto ends_with_year = std::regex_search(s, sm, re);
+    const auto day            = (ends_with_year) ? s.substr(0, 2) : s.substr(5, 2);
+    const auto month          = (ends_with_year) ? s.substr(3, 2) : s.substr(8, 2);
+    const auto year           = (ends_with_year) ? sm.str() : s.substr(0, 4);
+    return year + "-" + month + "-" + day;
 }
 
 std::string remove_newlines(const std::string& s)
@@ -230,6 +220,7 @@ std::string get_version(std::string s)
     return sm.str();
 }
 
+
 common::revision_t parse_version_description(std::string f, std::string s)
 {
     common::revision_t revision;
@@ -266,7 +257,7 @@ common::revision_t parse_version_date_author_description(std::string f, std::str
     return revision;
 }
 
-std::optional<common::revision_t> parse_r(const std::string& f, const std::string& s, detail::revision_type::type t)
+std::optional<common::revision_t> parse_revision(const std::string& f, const std::string& s, detail::revision_type::type t)
 {
     using namespace detail;
     switch (t)
@@ -288,7 +279,7 @@ common::revisions_t parse_items(const std::vector<std::pair<std::string, std::st
     common::revisions_t ret;
     for (const auto& [f, s] : items)
     {
-        if (const auto res = parse_r(f, s, t); res)
+        if (const auto res = parse_revision(f, s, t); res)
         {
             ret.push_back(*res);
         }
@@ -297,7 +288,7 @@ common::revisions_t parse_items(const std::vector<std::pair<std::string, std::st
     return ret;
 }
 
-std::size_t end_of_revisions(const std::string& s)
+std::size_t find_revisions_end(const std::string& s)
 {
     const static std::regex re("\\n\\n");
     std::smatch sm;
@@ -323,7 +314,7 @@ common::revisions_t parse_revisions(const std::string& file)
 
     const auto& items_str = without_header.substr(tokens_from, without_header.size());
 
-    const auto revisions_end = end_of_revisions(items_str);
+    const auto revisions_end = find_revisions_end(items_str);
     const auto& revision_s   = items_str.substr(0, revisions_end);
 
     const auto items = get_items(revision_s, *type);
