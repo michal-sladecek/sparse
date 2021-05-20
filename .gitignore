@@ -1,3 +1,9 @@
+# Added by Ondra
+build
+dataset
+.idea
+*.pyc
+
 # Prerequisites
 *.d
 
