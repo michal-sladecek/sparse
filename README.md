@@ -43,3 +43,13 @@ ctest
 ```
 ./modules/parser/parser --help
 ```
+
+
+### Information about scorer from Ondra
+
+```sh
+git submodule update --init
+
+./build/modules/parser/parser dataset_dirty/dataset
+python3 scorer_wrapper.py
+```
