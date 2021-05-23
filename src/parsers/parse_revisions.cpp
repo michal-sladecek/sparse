@@ -15,13 +15,13 @@ static const std::string empty_start    = "( |\\t)*";
 static const std::string revision_start = "\n( ){0,3}";
 static const std::string months         = "(January|February|March|April|May|June|July|August|September|October|November|December)";
 
-static const std::string header                     = "^(.|\\n|\\n\\r)*(Revision History|Version Control)";
-static const std::string version_description_header = "^(.|\\n|\\n\\r)*Version[ \\t]+Description of change";
+static const std::string header                     = "(Revision History|Version Control)";
+static const std::string version_description_header = "Version[ \\t]+Description of change";
 static const std::string version_date_description_header =
-    "^(.|\\n|\\n\\r)*(Rev|Revision|Version)"
+    "(Rev|Revision|Version)"
     "[ \\t]+(Date|Release Date|Release date)[ \\t]+(Description number|Description\\nnumber|Description|Change notice)";
-static const std::string date_version_description_header        = "^(.|\\n|\\n\\r)*Date[ \\t]+Version[ \\t]+";
-static const std::string version_date_author_description_header = "^(.|\\n|\\n\\r)*Version[ \\t]+Date[ \\t]+Author[ \\t]+Changes to Previous Version";
+static const std::string date_version_description_header        = "Date[ \\t]+Version[ \\t]+";
+static const std::string version_date_author_description_header = "Version[ \\t]+Date[ \\t]+Author[ \\t]+Changes to Previous Version";
 
 static const std::string version     = "(v|Rev\\. |Version )?\\d\\.\\d";
 static const std::string date        = "(\\d{4}\\-\\d{1,2}\\-\\d{1,2}|\\d{1,2}.\\d{1,2}.\\d{4}|\\d{1,2}[ \\-]" + months + "[ \\-]\\d{4})";
@@ -304,6 +304,10 @@ std::size_t find_revisions_end(const std::string& s)
 
 common::revisions_t parse_revisions(const std::string& file)
 {
+    if (false){
+        return {}; // This can be used to disable parsing of Revisions.
+    }
+
     const auto header_end             = find_header(file);
     const std::string& without_header = file.substr(header_end, file.size());
 
